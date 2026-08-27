@@ -73,10 +73,20 @@ const readConfig = async () => {
   }
 };
 
-// Check if config has 9Router settings
+// Provider key written into ~/.codex/config.toml. New installs use "ineedrouter";
+// "9router" is the legacy key kept for detection/cleanup of pre-existing configs.
+const PROVIDER_KEY = "ineedrouter";
+const LEGACY_PROVIDER_KEY = "9router";
+
+// Check if config has iNeedRouter settings
 const has9RouterConfig = (config) => {
   if (!config) return false;
-  return config.includes("model_provider = \"9router\"") || config.includes("[model_providers.9router]");
+  return (
+    config.includes(`model_provider = "${PROVIDER_KEY}"`) ||
+    config.includes(`[model_providers.${PROVIDER_KEY}]`) ||
+    config.includes(`model_provider = "${LEGACY_PROVIDER_KEY}"`) ||
+    config.includes(`[model_providers.${LEGACY_PROVIDER_KEY}]`)
+  );
 };
 
 // GET - Check codex CLI and read current settings
@@ -106,7 +116,7 @@ export async function GET() {
   }
 }
 
-// POST - Update 9Router settings (merge with existing config)
+// POST - Update iNeedRouter settings (merge with existing config)
 export async function POST(request) {
   try {
     const { baseUrl, apiKey, model, subagentModel } = await request.json();
@@ -128,15 +138,17 @@ export async function POST(request) {
       parsed = parsedToWritable(parseTOML(existingConfig));
     } catch { /* No existing config */ }
 
-    // Update only 9Router related fields (api_key goes to auth.json, not config.toml)
+    // Update only iNeedRouter related fields (api_key goes to auth.json, not config.toml)
     parsed.model = model;
-    parsed.model_provider = "9router";
+    parsed.model_provider = PROVIDER_KEY;
+    // Drop any legacy-keyed provider so users do not end up with duplicates
+    deleteNestedSection(parsed, `model_providers.${LEGACY_PROVIDER_KEY}`);
 
-    // Update or create 9router provider section (no api_key - Codex reads from auth.json)
+    // Update or create iNeedRouter provider section (no api_key - Codex reads from auth.json)
     // Ensure /v1 suffix is added only once
     const normalizedBaseUrl = baseUrl.endsWith("/v1") ? baseUrl : `${baseUrl}/v1`;
-    setNestedSection(parsed, "model_providers.9router", {
-      name: "9Router",
+    setNestedSection(parsed, `model_providers.${PROVIDER_KEY}`, {
+      name: "iNeedRouter",
       base_url: normalizedBaseUrl,
       wire_api: "responses",
     });
@@ -175,7 +187,7 @@ export async function POST(request) {
   }
 }
 
-// DELETE - Remove 9Router settings only (keep other settings)
+// DELETE - Remove iNeedRouter settings only (keep other settings)
 export async function DELETE() {
   try {
     const configPath = getCodexConfigPath();
@@ -195,14 +207,15 @@ export async function DELETE() {
       throw error;
     }
 
-    // Remove 9Router related root fields only if they point to 9router
-    if (parsed.model_provider === "9router") {
+    // Remove iNeedRouter related root fields only if they point to our providers
+    if (parsed.model_provider === PROVIDER_KEY || parsed.model_provider === LEGACY_PROVIDER_KEY) {
       delete parsed.model;
       delete parsed.model_provider;
     }
 
-    // Remove 9router provider section
-    deleteNestedSection(parsed, "model_providers.9router");
+    // Remove provider sections (both key styles)
+    deleteNestedSection(parsed, `model_providers.${PROVIDER_KEY}`);
+    deleteNestedSection(parsed, `model_providers.${LEGACY_PROVIDER_KEY}`);
 
     // Remove subagent configuration
     deleteNestedSection(parsed, "agents.subagent");
@@ -229,7 +242,7 @@ export async function DELETE() {
 
     return NextResponse.json({
       success: true,
-      message: "9Router settings removed successfully",
+      message: "iNeedRouter settings removed successfully",
     });
   } catch (error) {
     console.log("Error resetting codex settings:", error);

@@ -32,12 +32,12 @@ const readConfig = async () => {
 
 const has9RouterConfig = (config) => {
   if (!Array.isArray(config)) return false;
-  return config.some((entry) => entry.name === "9Router");
+  return config.some((entry) => entry.name === "iNeedRouter" || entry.name === "9Router");
 };
 
 const get9RouterEntry = (config) => {
   if (!Array.isArray(config)) return null;
-  return config.find((entry) => entry.name === "9Router") || null;
+  return config.find((entry) => entry.name === "iNeedRouter") ?? config.find((entry) => entry.name === "9Router") ?? null;
 };
 
 // GET - Read current copilot config
@@ -81,10 +81,10 @@ export async function POST(request) {
     } catch { /* No existing config */ }
 
     const endpointUrl = `${baseUrl}/chat/completions#models.ai.azure.com`;
-    const keyToUse = apiKey || "sk_9router";
+    const keyToUse = apiKey || "sk_ineedrouter";
 
     const newEntry = {
-      name: "9Router",
+      name: "iNeedRouter",
       vendor: "azure",
       apiKey: keyToUse,
       models: models.map((id) => ({
@@ -99,7 +99,8 @@ export async function POST(request) {
     };
 
     // Replace existing 9Router entry or append
-    const idx = config.findIndex((e) => e.name === "9Router");
+    let idx = config.findIndex((e) => e.name === "iNeedRouter");
+  if (idx === -1) idx = config.findIndex((e) => e.name === "9Router");
     if (idx >= 0) {
       config[idx] = newEntry;
     } else {
@@ -136,7 +137,7 @@ export async function DELETE() {
       throw error;
     }
 
-    config = config.filter((e) => e.name !== "9Router");
+    config = config.filter((e) => e.name !== "iNeedRouter" && e.name !== "9Router");
     await fs.writeFile(configPath, JSON.stringify(config, null, 2));
 
     return NextResponse.json({

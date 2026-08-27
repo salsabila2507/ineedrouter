@@ -39,7 +39,8 @@ export default function OpenClawToolCard({
 
   const getConfigStatus = () => {
     if (!openclawStatus?.installed) return null;
-    const currentProvider = openclawStatus.settings?.models?.providers?.["9router"];
+    // Prefer the new "ineedrouter" key; fall back to legacy "9router"
+    const currentProvider = openclawStatus.settings?.models?.providers?.["ineedrouter"] ?? openclawStatus.settings?.models?.providers?.["9router"];
     if (!currentProvider) return "not_configured";
     return matchKnownEndpoint(currentProvider.baseUrl, { tunnelPublicUrl, tailscaleUrl }) ? "configured" : "other";
   };
@@ -132,7 +133,7 @@ export default function OpenClawToolCard({
     try {
       const keyToUse = selectedApiKey?.trim()
         || (apiKeys?.length > 0 ? apiKeys[0].key : null)
-        || (!cloudEnabled ? "sk_9router" : null);
+        || (!cloudEnabled ? "sk_ineedrouter" : null);
 
       const res = await fetch("/api/cli-tools/openclaw-settings", {
         method: "POST",
@@ -192,19 +193,19 @@ export default function OpenClawToolCard({
   const getManualConfigs = () => {
     const keyToUse = (selectedApiKey && selectedApiKey.trim())
       ? selectedApiKey
-      : (!cloudEnabled ? "sk_9router" : "<API_KEY_FROM_DASHBOARD>");
+      : (!cloudEnabled ? "sk_ineedrouter" : "<API_KEY_FROM_DASHBOARD>");
 
     const settingsContent = {
       agents: {
         defaults: {
           model: {
-            primary: `9router/${selectedModel || "provider/model-id"}`,
+            primary: `ineedrouter/${selectedModel || "provider/model-id"}`,
           },
         },
       },
       models: {
         providers: {
-          "9router": {
+          "ineedrouter": {
             baseUrl: getEffectiveBaseUrl(),
             apiKey: keyToUse,
             api: "openai-completions",
@@ -295,12 +296,12 @@ export default function OpenClawToolCard({
                 </div>
 
                 {/* Current configured */}
-                {openclawStatus?.settings?.models?.providers?.["9router"]?.baseUrl && (
+                {(openclawStatus?.settings?.models?.providers?.["ineedrouter"]?.baseUrl || openclawStatus?.settings?.models?.providers?.["9router"]?.baseUrl) && (
                   <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-[8rem_auto_1fr_auto] sm:items-center sm:gap-2">
                     <span className="text-xs font-semibold text-text-main sm:text-right sm:text-sm">Current</span>
                     <span className="material-symbols-outlined hidden text-text-muted text-[14px] sm:inline">arrow_forward</span>
                     <span className="min-w-0 truncate rounded bg-surface/40 px-2 py-2 text-xs text-text-muted sm:py-1.5">
-                      {openclawStatus.settings.models.providers["9router"].baseUrl}
+                      {(openclawStatus.settings.models.providers.ineedrouter ?? openclawStatus.settings.models.providers["9router"]).baseUrl}
                     </span>
                   </div>
                 )}

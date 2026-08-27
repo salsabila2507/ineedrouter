@@ -505,7 +505,7 @@
   "Manual / current endpoint": "Endpoint manual / atual",
   "Manual Callback Required": "Callback Manual Necessário",
   "Manual Config": "Configuração Manual",
-  "Manual configuration is still available if 9router is deployed on a remote server.": "A configuração manual ainda está disponível se o iNeedRouter estiver implantado em um servidor remoto.",
+  "Manual configuration is still available if iNeedRouter is deployed on a remote server.": "A configuração manual ainda está disponível se o iNeedRouter estiver implantado em um servidor remoto.",
   "Mask (URL)": "Máscara (URL)",
   "Max JSON Size (KB)": "Tamanho máximo de JSON (KB)",
   "Max Records": "Número máximo de registros",
@@ -983,7 +983,7 @@
   "extras status failed": "falha no status dos extras",
   "git/grep/ls/tree/logs → 60-90% fewer input tokens": "git/grep/ls/tree/logs → 60-90% menos tokens de entrada",
   "not installed": "não instalado",
-  "sk_9router (default)": "sk_9router (padrão)",
+  "sk_ineedrouter (default)": "sk_ineedrouter (padrão)",
   "tree-sitter AST compression for code responses": "Compressão AST tree-sitter para respostas de código",
   "⚠️ MITM intercepts HTTPS traffic of IDE tools (Antigravity, GitHub Copilot, Kiro) via local CA to redirect requests to your providers. May violate ToS → account ban. Use at your own risk.": "⚠️ MITM intercepta tráfego HTTPS de ferramentas IDE (Antigravity, GitHub Copilot, Kiro) via CA local para redirecionar solicitações aos seus provedores. Pode violar ToS → risco de banimento de conta. Use por sua conta e risco.",
   "⚠️ Risk Notice: This provider uses a subscription/OAuth session not officially licensed for proxy/router use. Account may be restricted or banned. Use at your own risk.": "⚠️ Aviso de Risco: Este provedor usa uma sessão de assinatura/OAuth não licenciada oficialmente para uso de proxy/roteador. A conta pode ser restrita ou banida. Use por sua conta e risco."

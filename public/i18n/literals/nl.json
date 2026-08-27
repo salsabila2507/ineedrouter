@@ -178,7 +178,7 @@
   "Antigravity/Copilot IDE request → DNS redirect to localhost:443 → MITM proxy intercepts → iNeedRouter → response to Antigravity/Copilot": "Antigravity/Copilot IDE-aanvraag → DNS-omleiding naar localhost:443 → MITM-proxy onderschept → iNeedRouter → antwoord naar Antigravity/Copilot",
   "No API keys — create one in Keys page": "Geen API-sleutels — maak er één aan op de pagina Sleutels",
   "e.g. a warm, gentle voice, speaking slowly with a British accent": "bijv.: een warme, zachte stem, die langzaam praat met een Brits accent",
-  "sk_9router (default)": "sk_9router (standaard)",
+  "sk_ineedrouter (default)": "sk_ineedrouter (standaard)",
   "Server started": "Server gestart",
   "Failed to start server": "Server starten mislukt",
   "Server stopped — all DNS cleared": "Server gestopt — alle DNS gewist",

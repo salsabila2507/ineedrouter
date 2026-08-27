@@ -1,6 +1,6 @@
 # 入门指南
 
-5 分钟启动 9Router,开始智能路由 AI 请求。
+5 分钟启动 iNeedRouter,开始智能路由 AI 请求。
 
 ---
 
@@ -9,7 +9,7 @@
 ### 1. 安装
 
 ```bash
-npm install -g 9router
+npm install -g ineedrouter
 ```
 
 **要求:** Node.js 20+([安装详情](getting-started/installation.md))
@@ -17,7 +17,7 @@ npm install -g 9router
 ### 2. 启动
 
 ```bash
-9router
+ineedrouter
 ```
 
 🎉 **仪表盘自动打开** 地址为 `http://localhost:20128`
@@ -43,7 +43,7 @@ npm install -g 9router
 **示例:Claude Code**
 1. 点击 "Connect Claude Code"
 2. 用你的 Claude 账户登录
-3. 授权 9Router
+3. 授权 iNeedRouter
 4. ✅ 完成!使用模型:`cc/claude-opus-4-5-20251101`
 
 #### 方式 B:API Key(低价提供商)
@@ -83,14 +83,14 @@ npm install -g 9router
 
 ## 4. 在 CLI 工具中使用
 
-将你的编码工具指向 9Router:
+将你的编码工具指向 iNeedRouter:
 
 ### Cursor IDE
 
 ```
 Settings → Models → Advanced:
   OpenAI API Base URL: http://localhost:20128/v1
-  OpenAI API Key: [从 9router 仪表盘获取]
+  OpenAI API Key: [从 ineedrouter 仪表盘获取]
   Model: cc/claude-opus-4-5-20251101
 ```
 
@@ -101,7 +101,7 @@ Settings → Models → Advanced:
 ```json
 {
   "anthropic_api_base": "http://localhost:20128/v1",
-  "anthropic_api_key": "your-9router-api-key"
+  "anthropic_api_key": "your-ineedrouter-api-key"
 }
 ```
 
@@ -118,7 +118,7 @@ Model: cc/claude-opus-4-5-20251101
 
 ```bash
 export OPENAI_BASE_URL="http://localhost:20128"
-export OPENAI_API_KEY="your-9router-api-key"
+export OPENAI_API_KEY="your-ineedrouter-api-key"
 
 codex "your prompt"
 ```
@@ -242,6 +242,6 @@ CLI 中使用: premium-coding
 
 ## 需要帮助?
 
-- **网站**: [9router.com](https://9router.com)
-- **GitHub**: [github.com/decolua/9router](https://github.com/decolua/9router)
-- **Issues**: [github.com/decolua/9router/issues](https://github.com/decolua/9router/issues)
+- **网站**: [ineed.web.id](https://ineed.web.id)
+- **GitHub**: [github.com/salsabila2507/ineedrouter](https://github.com/salsabila2507/ineedrouter)
+- **Issues**: [github.com/salsabila2507/ineedrouter/issues](https://github.com/salsabila2507/ineedrouter/issues)

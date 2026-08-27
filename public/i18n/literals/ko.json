@@ -178,7 +178,7 @@
   "Antigravity/Copilot IDE request → DNS redirect to localhost:443 → MITM proxy intercepts → iNeedRouter → response to Antigravity/Copilot": "Antigravity/Copilot IDE 요청 → localhost:443로 DNS 리디렉션 → MITM 프록시가 가로챔 → iNeedRouter → Antigravity/Copilot으로 응답",
   "No API keys — create one in Keys page": "API 키 없음 — 키 페이지에서 만들기",
   "e.g. a warm, gentle voice, speaking slowly with a British accent": "예: 따뜻하고 부드러운 목소리로 영국식 억양을 쓰며 천천히 말하기",
-  "sk_9router (default)": "sk_9router (기본값)",
+  "sk_ineedrouter (default)": "sk_ineedrouter (기본값)",
   "Server started": "서버 시작됨",
   "Failed to start server": "서버 시작 실패",
   "Server stopped — all DNS cleared": "서버 중지됨 — 모든 DNS 지워짐",

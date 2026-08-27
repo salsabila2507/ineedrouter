@@ -1,132 +1,57 @@
-# Docker
+# Docker deployment
 
-Run 9Router in a container. Published image: [`decolua/9router`](https://hub.docker.com/r/decolua/9router) — multi-platform `linux/amd64` + `linux/arm64`.
+iNeedRouter ships a `Dockerfile` that builds the Next.js server + routing engine from source.
 
----
-
-# 👤 For Users
-
-## Quick start
+## Compose (recommended)
 
 ```bash
-docker run -d \
+cp .env.example .env    # review the env contract first
+docker compose up -d
+```
+
+- Dashboard: `http://localhost:20128/dashboard`
+- Endpoint: `http://localhost:20128/v1/...`
+- Headroom proxy (optional companion) is included in `docker-compose.yml`.
+
+## Manual build
+
+```bash
+docker build -t ineedrouter .
+docker run -d --name ineedrouter \
   -p 20128:20128 \
-  -v "$HOME/.9router:/app/data" \
-  -e DATA_DIR=/app/data \
-  --name 9router \
-  decolua/9router:latest
+  --env-file .env \
+  -v ineedrouter-data:/app/data \
+  ineedrouter
 ```
 
-App listens on port `20128`. Open: http://localhost:20128
+## Data directory
 
-## Manage container
+All state (SQLite DB, usage logs, OAuth tokens) lives under `DATA_DIR` inside the container (`/app/data` by default). Mount a volume so data survives upgrades:
 
 ```bash
-docker logs -f 9router        # view logs
-docker stop 9router           # stop
-docker start 9router          # start again
-docker rm -f 9router          # remove
+-v ineedrouter-data:/app/data
 ```
 
-## Data persistence
+On the host (non-Docker) the default remains `~/.9router` for compatibility with existing installations; `DATA_DIR` overrides it.
+
+## Environment
+
+See [.env.example](.env.example) for the full contract. Highlights:
+
+| Variable | Purpose |
+| --- | --- |
+| `PORT` | Server port (default `20128`) |
+| `DATA_DIR` | Persistent state directory |
+| `JWT_SECRET` | Session cookie signing secret |
+| `INITIAL_PASSWORD` | First admin password — **must override `123456`** |
+| `API_KEY_SECRET` | Secret for API key derivation |
+| `CLOUD_URL` / `NEXT_PUBLIC_CLOUD_URL` | Public base URL shown in the UI (e.g. your tunnel/domain) |
+
+## Upgrades
 
 ```bash
--v "$HOME/.9router:/app/data" \
--e DATA_DIR=/app/data
+docker compose pull      # only if you switch to a registry image
+docker compose up -d --build
 ```
 
-Without `DATA_DIR`, the app falls back to `~/.9router/` (macOS/Linux) or `%APPDATA%\9router\` (Windows). In the container, `DATA_DIR=/app/data` makes the bind mount work.
-
-Data layout under `$DATA_DIR/`:
-
-```text
-$DATA_DIR/
-├── db/
-│   ├── data.sqlite       # main SQLite database
-│   └── backups/          # auto backups
-└── ...                   # certs, logs, runtime configs
-```
-
-Host path: `$HOME/.9router/db/data.sqlite`
-Container path: `/app/data/db/data.sqlite`
-
-## Optional env vars
-
-```bash
-docker run -d \
-  -p 20128:20128 \
-  -v "$HOME/.9router:/app/data" \
-  -e DATA_DIR=/app/data \
-  -e PORT=20128 \
-  -e HOSTNAME=0.0.0.0 \
-  -e DEBUG=true \
-  --name 9router \
-  decolua/9router:latest
-```
-
-## Optional Headroom sidecar
-
-The 9Router image does not bundle Python or Headroom. To use Headroom in Docker, run it as a separate service and point 9Router at that proxy:
-
-```yaml
-services:
-  9router:
-    image: decolua/9router:latest
-    ports:
-      - "20128:20128"
-    volumes:
-      - "$HOME/.9router:/app/data"
-    environment:
-      DATA_DIR: /app/data
-      HEADROOM_URL: http://headroom:8787
-    depends_on:
-      - headroom
-
-  headroom:
-    image: ghcr.io/chopratejas/headroom:latest
-    ports:
-      - "8787:8787"
-```
-
-In the dashboard, open `Endpoint` → `Token Saver` → `Headroom`, confirm the URL is `http://headroom:8787`, recheck status, then enable Headroom.
-
-If Headroom runs on the Docker host instead of as a sidecar, use `http://host.docker.internal:8787` on macOS/Windows. On Linux, add `--add-host=host.docker.internal:host-gateway` or the equivalent compose `extra_hosts` entry.
-
-## Update to latest
-
-```bash
-docker pull decolua/9router:latest
-docker rm -f 9router
-# re-run the quick start command
-```
-
----
-
-# 🛠 For Developers
-
-## Build image locally (test)
-
-```bash
-cd app && docker build -t 9router .
-
-docker run --rm -p 20128:20128 \
-  -v "$HOME/.9router:/app/data" \
-  -e DATA_DIR=/app/data \
-  9router
-```
-
-## Publish (automatic via CI)
-
-Push a git tag `v*` → GitHub Actions builds multi-platform (amd64+arm64) and pushes to:
-- `ghcr.io/decolua/9router:v{version}` + `:latest`
-- `decolua/9router:v{version}` + `:latest`
-
-```bash
-# Use scripts/release.js (recommended)
-node scripts/release.js "Release title" "Notes"
-
-# Or manually
-git tag v0.4.x && git push origin v0.4.x
-```
-
-Workflow: `app/.github/workflows/docker-publish.yml`
+The SQLite schema migrates automatically on first start.

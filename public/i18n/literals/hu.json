@@ -178,7 +178,7 @@
   "Antigravity/Copilot IDE request → DNS redirect to localhost:443 → MITM proxy intercepts → iNeedRouter → response to Antigravity/Copilot": "Antigravity/Copilot IDE kérés → DNS átirányítás a localhost:443-ra → MITM proxy elfogja → iNeedRouter → válasz Antigravity/Copilot-nak",
   "No API keys — create one in Keys page": "Nincsenek API-kulcsok — hozzon létre egyet a Keys oldalon",
   "e.g. a warm, gentle voice, speaking slowly with a British accent": "pl.: meleg, lágy hang, lassan beszél brit akcentussal",
-  "sk_9router (default)": "sk_9router (alapértelmezett)",
+  "sk_ineedrouter (default)": "sk_ineedrouter (alapértelmezett)",
   "Server started": "Szerver elindult",
   "Failed to start server": "Nem sikerült elindítani a szervert",
   "Server stopped — all DNS cleared": "A szerver leállt — az összes DNS törlésre kerül",

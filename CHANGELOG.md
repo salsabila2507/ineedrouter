@@ -1,3 +1,7 @@
+<!-- iNeedRouter fork notice: entries below document the upstream 9router release
+history this fork inherits. Fork-specific changes are prepended above each new
+release from here on. -->
+
 # v0.5.55 (2026-08-14)
 
 ## Features

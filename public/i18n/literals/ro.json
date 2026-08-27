@@ -178,7 +178,7 @@
   "Antigravity/Copilot IDE request → DNS redirect to localhost:443 → MITM proxy intercepts → iNeedRouter → response to Antigravity/Copilot": "Solicitare Antigravity/Copilot IDE → Redirecționare DNS la localhost:443 → Proxy MITM interceptează → iNeedRouter → răspuns la Antigravity/Copilot",
   "No API keys — create one in Keys page": "Nicio cheie API — creați una în pagina Chei",
   "e.g. a warm, gentle voice, speaking slowly with a British accent": "ex.: voce caldă și blândă, vorbind încet cu accent britanic",
-  "sk_9router (default)": "sk_9router (implicit)",
+  "sk_ineedrouter (default)": "sk_ineedrouter (implicit)",
   "Server started": "Server pornit",
   "Failed to start server": "Nu s-a putut porni serverul",
   "Server stopped — all DNS cleared": "Server oprit — toate DNS-urile șterse",

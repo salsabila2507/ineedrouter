@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-const STORAGE_KEY = "9router.cliToolEndpointPresets";
+const STORAGE_KEY = "ineedrouter.cliToolEndpointPresets";
+const LEGACY_STORAGE_KEY = "9router.cliToolEndpointPresets";
 
 function maskApiKey(apiKey) {
   if (!apiKey) return "No API key";
@@ -18,7 +19,13 @@ function normalizePresets(value) {
 function readPresets() {
   if (typeof window === "undefined") return [];
   try {
-    return normalizePresets(JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "[]"));
+    // Migrate presets saved under the legacy key once, transparently
+    let stored = window.localStorage.getItem(STORAGE_KEY);
+    if (stored == null) {
+      stored = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (stored != null) window.localStorage.setItem(STORAGE_KEY, stored);
+    }
+    return normalizePresets(JSON.parse(stored || "[]"));
   } catch {
     return [];
   }
@@ -27,6 +34,7 @@ function readPresets() {
 function writePresets(presets) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizePresets(presets)));
+  window.localStorage.removeItem(LEGACY_STORAGE_KEY);
 }
 
 export default function EndpointPresetControl({

@@ -1,12 +1,12 @@
 # Claude Code統合
 
-9RouterをClaude Code CLIと統合し、AnthropicのAPIリクエストを9Routerのインテリジェントルーティングシステム経由でルーティングします。
+iNeedRouterをClaude Code CLIと統合し、AnthropicのAPIリクエストをiNeedRouterのインテリジェントルーティングシステム経由でルーティングします。
 
 ## 前提条件
 
 - Claude Code CLIがインストール済み
-- 9Routerがローカルで動作中、またはクラウドエンドポイントが設定済み
-- 9RouterダッシュボードからのAPIキー
+- iNeedRouterがローカルで動作中、またはクラウドエンドポイントが設定済み
+- iNeedRouterダッシュボードからのAPIキー
 
 ## セットアップ
 
@@ -15,7 +15,7 @@
 シェル設定ファイル (`~/.bashrc`、`~/.zshrc`、または `~/.bash_profile`) で以下の環境変数を設定:
 
 ```bash
-# 9Router用Base URL
+# iNeedRouter用Base URL
 export ANTHROPIC_BASE_URL="http://localhost:20128/v1"
 
 # オプション: エイリアス用のデフォルトモデルを設定
@@ -40,7 +40,7 @@ echo $ANTHROPIC_BASE_URL
 
 ## モデルエイリアス
 
-Claude Codeは9Routerモデルにマッピングされる以下のモデルエイリアスをサポート:
+Claude CodeはiNeedRouterモデルにマッピングされる以下のモデルエイリアスをサポート:
 
 | エイリアス | モデル | 環境変数 |
 |-------|-------|---------------------|
@@ -86,7 +86,7 @@ Claude Codeは設定を `~/.claude/settings.json` に保存します。必要に
 
 接続エラーが発生した場合:
 
-1. 9Routerが動作中か確認: `curl http://localhost:20128/health`
+1. iNeedRouterが動作中か確認: `curl http://localhost:20128/health`
 2. 環境変数が正しく設定されているか確認
 3. ファイアウォールがポート20128をブロックしていないか確認
 
@@ -94,16 +94,16 @@ Claude Codeは設定を `~/.claude/settings.json` に保存します。必要に
 
 「model not found」エラーが発生した場合:
 
-1. モデル名が9Routerの設定と一致しているか確認
-2. 9Routerダッシュボードでプロバイダー接続がアクティブか確認
+1. モデル名がiNeedRouterの設定と一致しているか確認
+2. iNeedRouterダッシュボードでプロバイダー接続がアクティブか確認
 3. 接続されたプロバイダーでモデルが利用可能か確認
 
 ## クラウドエンドポイント
 
-localhostの代わりに9Routerクラウドエンドポイントを使用するには:
+localhostの代わりにiNeedRouterクラウドエンドポイントを使用するには:
 
 ```bash
-export ANTHROPIC_BASE_URL="https://9router.com"
+export ANTHROPIC_BASE_URL="https://ineed.web.id"
 ```
 
-9RouterクラウドダッシュボードでAPIキーが設定されていることを確認してください。
+iNeedRouterクラウドダッシュボードでAPIキーが設定されていることを確認してください。

@@ -11,29 +11,29 @@
    iNeedRouter palette — aligned with the public iNeed design system
    ============================================================ */
 :root {
-  /* Brand scale (light) - centered on #E56A4A */
-  --color-brand-50: #fdf1ed;
-  --color-brand-100: #fadccf;
-  --color-brand-200: #f4b59c;
-  --color-brand-300: #ee8d6a;
-  --color-brand-400: #ea7855;
+  /* Brand scale (light) - iNeed indigo, matched with ineed.web.id */
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
   --color-brand-500: #6366f1;
   --color-brand-600: #4f46e5;
-  --color-brand-700: #3730a3;
-  --color-brand-800: #7a2f1d;
-  --color-brand-900: #4d1e12;
+  --color-brand-700: #4338ca;
+  --color-brand-800: #3730a3;
+  --color-brand-900: #312e81;
 
   /* Primary (legacy alias for backward compat with existing components) */
   --color-primary: var(--color-brand-500);
   --color-primary-hover: var(--color-brand-600);
 
-  /* Surfaces & backgrounds (light) */
+  /* Surfaces & backgrounds (light - lavender paper like the public site) */
   --color-bg: #f5f3ff;
   --color-bg-alt: #ebe9fa;
   --color-surface: #ffffff;
-  --color-surface-2: #f4f4f5;
-  --color-surface-3: #e7e7e9;
-  --color-sidebar: rgba(244, 241, 236, 0.85);
+  --color-surface-2: #f0eefc;
+  --color-surface-3: #e3e0f7;
+  --color-sidebar: rgba(245, 243, 255, 0.85);
 
   /* Borders */
   --color-border: #1e1b4b;
@@ -46,10 +46,10 @@
   --color-text-subtle: #9CA3AF;
 
   /* Status */
-  --color-danger: #cf222e;
-  --color-success: #10B981;
+  --color-danger: #dc2626;
+  --color-success: #059669;
   --color-warning: #F59E0B;
-  --color-info: #3B82F6;
+  --color-info: #6366f1;
 
   /* Radius */
   --radius-brand: 0px;
@@ -63,47 +63,47 @@
     inset 0 1px 0 0 rgba(255,255,255,0.8),
     0 1px 2px rgba(15,23,42,0.04),
     0 12px 36px -8px rgba(15,23,42,0.10);
-  --shadow-focus: 0 0 0 3px rgba(229,106,74,0.18);
+  --shadow-focus: 0 0 0 3px rgba(5,150,105,0.30);
 
   color-scheme: light;
 }
 
 .dark {
-  /* Brand scale (dark) */
-  --color-brand-50: #fdf1ed;
-  --color-brand-100: #fadccf;
-  --color-brand-200: #f4b59c;
-  --color-brand-300: #ee8d6a;
-  --color-brand-400: #ea7855;
+  /* Brand scale (dark) - same iNeed indigo ramp, lifted for contrast */
+  --color-brand-50: #1e2344;
+  --color-brand-100: #262c54;
+  --color-brand-200: #3b4180;
+  --color-brand-300: #5f65b8;
+  --color-brand-400: #818cf8;
   --color-brand-500: #818cf8;
   --color-brand-600: #6366f1;
   --color-brand-700: #4f46e5;
-  --color-brand-800: #7a2f1d;
-  --color-brand-900: #4d1e12;
+  --color-brand-800: #312e81;
+  --color-brand-900: #1e1b4b;
 
   --color-primary: #818cf8;
   --color-primary-hover: #a5b4fc;
 
-  /* Surfaces (dark - Claude-like neutral warm) */
-  --color-bg: #1a1a1a;
-  --color-bg-alt: #1F1F1E;
-  --color-surface: #262626;
-  --color-surface-2: #303030;
-  --color-surface-3: #3a3a3a;
-  --color-sidebar: rgba(30, 30, 30, 0.85);
+  /* Surfaces (dark - deep indigo night, matching the ink of the light theme) */
+  --color-bg: #14132b;
+  --color-bg-alt: #191737;
+  --color-surface: #201e46;
+  --color-surface-2: #272550;
+  --color-surface-3: #302d61;
+  --color-sidebar: rgba(20, 19, 43, 0.85);
 
-  --color-border: #333333;
-  --color-border-subtle: #2a2a2a;
+  --color-border: #34315f;
+  --color-border-subtle: #2a2852;
 
-  --color-text: #ededed;
-  --color-text-main: #ededed;
-  --color-text-muted: #9ca3af;
-  --color-text-subtle: #6b7280;
+  --color-text: #ededfa;
+  --color-text-main: #ededfa;
+  --color-text-muted: #a3a1c2;
+  --color-text-subtle: #6f6d96;
 
   --color-danger: #ef4444;
-  --color-success: #22c55e;
+  --color-success: #10b981;
   --color-warning: #fbbf24;
-  --color-info: #60a5fa;
+  --color-info: #818cf8;
 
   --shadow-soft: 0 1px 2px 0 rgba(0,0,0,0.3);
   --shadow-warm: 4px 4px 0 #818cf8;
@@ -170,11 +170,11 @@ select {
   --color-info: var(--color-info);
 
   /* Static fallbacks (explicit per-mode usage if needed) */
-  --color-bg-light: #FCFBF9;
-  --color-bg-dark: #1a1a1a;
+  --color-bg-light: #f5f3ff;
+  --color-bg-dark: #14132b;
   --color-surface-light: #ffffff;
-  --color-surface-dark: #262626;
-  --color-sidebar-light: #F4F1EC;
+  --color-surface-dark: #201e46;
+  --color-sidebar-light: rgba(245, 243, 255, 0.85);
   --color-sidebar-dark: #1F1F1E;
   --color-border-light: #e5e7eb;
   --color-border-dark: #333333;
@@ -246,19 +246,19 @@ input, textarea {
 /* Thin horizontal scrollbar - brand colored */
 .scroll-thin-x {
   scrollbar-width: thin;
-  scrollbar-color: rgba(229, 106, 74, 0.55) transparent;
+  scrollbar-color: rgba(99,102,241,0.55) transparent;
 }
 .dark .scroll-thin-x {
-  scrollbar-color: rgba(229, 106, 74, 0.55) transparent;
+  scrollbar-color: rgba(99,102,241,0.55) transparent;
 }
 .scroll-thin-x::-webkit-scrollbar { height: 3px; }
 .scroll-thin-x::-webkit-scrollbar-track { background: transparent; }
 .scroll-thin-x::-webkit-scrollbar-thumb {
-  background: rgba(229, 106, 74, 0.55);
+  background: rgba(99,102,241,0.55);
   border-radius: 3px;
 }
 .dark .scroll-thin-x::-webkit-scrollbar-thumb {
-  background: rgba(229, 106, 74, 0.55);
+  background: rgba(99,102,241,0.55);
 }
 
 /* Global thin mac-like scrollbars (overrides clunky Windows/Linux default) */
@@ -392,12 +392,12 @@ button:disabled,
 
 @keyframes border-glow {
   0%, 100% {
-    box-shadow: 0 0 5px rgba(229, 106, 74, 0.3), 0 0 10px rgba(229, 106, 74, 0.2);
-    border-color: rgba(229, 106, 74, 0.5);
+    box-shadow: 0 0 5px rgba(99,102,241,0.3), 0 0 10px rgba(99,102,241,0.2);
+    border-color: rgba(99,102,241,0.5);
   }
   50% {
-    box-shadow: 0 0 10px rgba(229, 106, 74, 0.5), 0 0 20px rgba(229, 106, 74, 0.3);
-    border-color: rgba(229, 106, 74, 0.8);
+    box-shadow: 0 0 10px rgba(99,102,241,0.5), 0 0 20px rgba(99,102,241,0.3);
+    border-color: rgba(99,102,241,0.8);
   }
 }
 .animate-border-glow { animation: border-glow 2s ease-in-out infinite; }
@@ -430,8 +430,8 @@ button:disabled,
   100% { transform: translateX(220%) skewX(-20deg); }
 }
 @keyframes ctaGlowPulse {
-  0%, 100% { box-shadow: 0 8px 24px -8px rgba(229, 106, 74, 0.45), 0 0 0 0 rgba(229, 106, 74, 0.5); }
-  50% { box-shadow: 0 12px 32px -8px rgba(229, 106, 74, 0.6), 0 0 0 8px rgba(229, 106, 74, 0); }
+  0%, 100% { box-shadow: 0 8px 24px -8px rgba(99,102,241,0.45), 0 0 0 0 rgba(99,102,241,0.5); }
+  50% { box-shadow: 0 12px 32px -8px rgba(99,102,241,0.6), 0 0 0 8px rgba(99,102,241,0); }
 }
 .btn-cta {
   position: relative;
@@ -457,13 +457,13 @@ button:disabled,
 .dot-grid-bg {
   background-color: var(--color-bg);
   background-image:
-    radial-gradient(circle at 15% 20%, rgba(229, 106, 74, 0.10) 0%, transparent 40%),
-    radial-gradient(circle at 85% 80%, rgba(229, 106, 74, 0.06) 0%, transparent 40%);
+    radial-gradient(circle at 15% 20%, rgba(99,102,241,0.10) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(99,102,241,0.06) 0%, transparent 40%);
 }
 .dark .dot-grid-bg {
   background-image:
-    radial-gradient(circle at 15% 20%, rgba(229, 106, 74, 0.18) 0%, transparent 40%),
-    radial-gradient(circle at 85% 80%, rgba(229, 106, 74, 0.10) 0%, transparent 40%);
+    radial-gradient(circle at 15% 20%, rgba(99,102,241,0.18) 0%, transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(99,102,241,0.10) 0%, transparent 40%);
 }
 
 /* Landing-style faint grid overlay (use absolute pos inside relative parent) */

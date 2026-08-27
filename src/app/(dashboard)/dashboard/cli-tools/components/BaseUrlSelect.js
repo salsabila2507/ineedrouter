@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { UPDATER_CONFIG } from "@/shared/constants/config";
 
-const STORAGE_KEY = "9router.cliToolEndpointPresets";
+const STORAGE_KEY = "ineedrouter.cliToolEndpointPresets";
+const LEGACY_STORAGE_KEY = "9router.cliToolEndpointPresets";
 const CUSTOM_VALUE = "__custom__";
 const SAVE_VALUE = "__save__";
 
@@ -16,7 +17,13 @@ const ensureV1 = (url) => {
 const readSavedPresets = () => {
   if (typeof window === "undefined") return [];
   try {
-    const raw = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "[]");
+    // Migrate presets saved under the legacy key once, transparently
+    let stored = window.localStorage.getItem(STORAGE_KEY);
+    if (stored == null) {
+      stored = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+      if (stored != null) window.localStorage.setItem(STORAGE_KEY, stored);
+    }
+    const raw = JSON.parse(stored || "[]");
     if (!Array.isArray(raw)) return [];
     return raw.filter((p) => p?.name && p?.baseUrl);
   } catch {
@@ -27,6 +34,7 @@ const readSavedPresets = () => {
 const writeSavedPresets = (presets) => {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(presets));
+  window.localStorage.removeItem(LEGACY_STORAGE_KEY);
 };
 
 const buildOptions = ({ requiresExternalUrl, tunnelEnabled, tunnelPublicUrl, tailscaleEnabled, tailscaleUrl, cloudEnabled, cloudUrl, savedPresets, withV1 }) => {

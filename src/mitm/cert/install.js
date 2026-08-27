@@ -27,7 +27,8 @@ function getLinuxCertConfig() {
   // Fallback to Debian default if none exist
   return LINUX_CERT_PATHS[0];
 }
-const ROOT_CA_CN = "9Router MITM Root CA";
+const ROOT_CA_CN = "iNeedRouter MITM Root CA";
+const LEGACY_ROOT_CA_CN = "9Router MITM Root CA";
 
 // Get SHA1 fingerprint from cert file using Node.js crypto
 function getCertFingerprint(certPath) {
@@ -105,7 +106,11 @@ async function installCert(sudoPassword, certPath) {
 
 async function installCertMac(sudoPassword, certPath) {
   // Remove all old certs with same name first to avoid duplicate/stale cert conflict
-  const deleteOld = `security delete-certificate -c "9Router MITM Root CA" /Library/Keychains/System.keychain 2>/dev/null || true`;
+  // Remove both the new and the previously-installed legacy cert name
+  const deleteOld = [
+    `security delete-certificate -c "${ROOT_CA_CN}" /Library/Keychains/System.keychain 2>/dev/null || true`,
+    `security delete-certificate -c "${LEGACY_ROOT_CA_CN}" /Library/Keychains/System.keychain 2>/dev/null || true`,
+  ].join("; ");
   const install = `security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "${certPath}"`;
   try {
     await execWithPassword(`${deleteOld} && ${install}`, sudoPassword);
@@ -121,6 +126,7 @@ async function installCertWindows(certPath) {
   // Delete any stale cert with same CN before adding to avoid duplicates.
   const script = `
     certutil -delstore Root ${quotePs(ROOT_CA_CN)} 2>$null | Out-Null
+    certutil -delstore Root ${quotePs(LEGACY_ROOT_CA_CN)} 2>$null | Out-Null
     $exit = & certutil -addstore Root ${quotePs(certPath)} 2>&1
     if ($LASTEXITCODE -ne 0) { throw "certutil exit $LASTEXITCODE" }
   `;
@@ -164,7 +170,10 @@ async function uninstallCertMac(sudoPassword, certPath) {
 
 async function uninstallCertWindows() {
   // Auto-elevate via UAC popup if not admin
-  const script = `certutil -delstore Root ${quotePs(ROOT_CA_CN)}`;
+  const script = [
+    `certutil -delstore Root ${quotePs(ROOT_CA_CN)}`,
+    `certutil -delstore Root ${quotePs(LEGACY_ROOT_CA_CN)}`,
+  ].join("; ");
   try {
     await runElevatedPowerShell(script);
     log("🔐 Cert: ✅ uninstalled from Windows Root store");
@@ -175,12 +184,12 @@ async function uninstallCertWindows() {
 
 function checkCertInstalledLinux() {
   const config = getLinuxCertConfig();
-  const certFile = `${config.dir}/9router-root-ca.crt`;
+  const certFile = `${config.dir}/ineedrouter-root-ca.crt`;
   return Promise.resolve(fs.existsSync(certFile));
 }
 
 async function updateNssDatabases(certPath, action = 'add') {
-  const certName = "9Router MITM Root CA";
+  const certName = ROOT_CA_CN;
   
   const script = `
     if ! command -v certutil &> /dev/null; then
@@ -232,7 +241,7 @@ async function installCertLinux(sudoPassword, certPath) {
   }
   
   const config = getLinuxCertConfig();
-  const destFile = `${config.dir}/9router-root-ca.crt`;
+  const destFile = `${config.dir}/ineedrouter-root-ca.crt`;
   
   // Copy to the discovered directory and execute the specific update command
   const cmd = `cp "${certPath}" "${destFile}" && (${config.cmd} 2>/dev/null || true)`;
@@ -255,7 +264,7 @@ async function uninstallCertLinux(sudoPassword) {
   }
   
   const config = getLinuxCertConfig();
-  const destFile = `${config.dir}/9router-root-ca.crt`;
+  const destFile = `${config.dir}/ineedrouter-root-ca.crt`;
   const cmd = `rm -f "${destFile}" && (${config.cmd} 2>/dev/null || true)`;
   
   try {

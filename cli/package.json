@@ -1,9 +1,9 @@
 {
-  "name": "9router",
+  "name": "ineedrouter",
   "version": "0.5.55",
-  "description": "9Router CLI - Start and manage 9Router server",
+  "description": "iNeedRouter CLI - Start and manage iNeedRouter server",
   "bin": {
-    "9router": "./cli.js"
+    "ineedrouter": "./cli.js"
   },
   "files": [
     "cli.js",
@@ -35,6 +35,7 @@
   },
   "keywords": [
     "9router",
+    "ineedrouter",
     "cli",
     "proxy",
     "ai",

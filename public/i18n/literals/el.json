@@ -178,7 +178,7 @@
   "Antigravity/Copilot IDE request → DNS redirect to localhost:443 → MITM proxy intercepts → iNeedRouter → response to Antigravity/Copilot": "Αίτημα Antigravity/Copilot IDE → Ανακατεύθυνση DNS στο localhost:443 → Ο διακομιστής μεσολάβησης MITM παρεμβαίνει → iNeedRouter → απάντηση στο Antigravity/Copilot",
   "No API keys — create one in Keys page": "Δεν υπάρχουν κλειδιά API — δημιουργήστε ένα στη σελίδα Keys",
   "e.g. a warm, gentle voice, speaking slowly with a British accent": "π.χ.: μια ζεστή, απαλή φωνή, που μιλάει αργά με βρετανική προφορά",
-  "sk_9router (default)": "sk_9router (προεπιλεγμένο)",
+  "sk_ineedrouter (default)": "sk_ineedrouter (προεπιλεγμένο)",
   "Server started": "Ο διακομιστής ξεκίνησε",
   "Failed to start server": "Αποτυχία εκκίνησης διακομιστή",
   "Server stopped — all DNS cleared": "Ο διακομιστής σταμάτησε — όλα τα DNS διαγράφηκαν",

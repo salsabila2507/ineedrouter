@@ -1,7 +1,7 @@
 {
-  "name": "9router-app",
+  "name": "ineedrouter-app",
   "version": "0.5.55",
-  "description": "9Router web dashboard",
+  "description": "iNeedRouter web dashboard",
   "private": true,
   "scripts": {
     "dev": "next dev --port 20127",
