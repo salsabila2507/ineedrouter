@@ -13,13 +13,13 @@ export const COLORS = {
 
   // Light theme backgrounds
   light: {
-    bg: "#FBF9F6",
-    bgAlt: "#F5F1ED",
+    bg: "#8b5cf6",
+    bgAlt: "#7c3aed",
     surface: "#FFFFFF",
-    sidebar: "rgba(246, 246, 246, 0.8)",
-    border: "rgba(0, 0, 0, 0.1)",
-    textMain: "#383733",
-    textMuted: "#75736E",
+    sidebar: "rgba(237, 233, 254, 0.96)",
+    border: "rgba(30, 27, 75, 0.35)",
+    textMain: "#1e1b4b",
+    textMuted: "#4338ca",
   },
 
   // Dark theme backgrounds
