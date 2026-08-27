@@ -15,10 +15,10 @@ export const COLORS = {
   light: {
     bg: "#8b5cf6",
     bgAlt: "#7c3aed",
-    surface: "#FFFFFF",
+    surface: "#f5f3ff",
     sidebar: "rgba(237, 233, 254, 0.96)",
     border: "rgba(30, 27, 75, 0.35)",
-    textMain: "#1e1b4b",
+    textMain: "#312e81",
     textMuted: "#4338ca",
   },
 
