@@ -1,4 +1,4 @@
-import { saveRequestUsage, appendRequestLog, saveRequestDetail } from "@/lib/usageDb.js";
+import { saveRequestUsage, appendRequestLog, saveRequestDetail } from "@/lib/usageDb.js"; import { recordResellerUsage } from "@/lib/localDb";
 import { COLORS } from "../../utils/stream.js";
 import { canonicalizeUsage } from "../../utils/usageTracking.js";
 
@@ -124,4 +124,5 @@ export function saveUsageStats({ provider, model, tokens, connectionId, apiKey, 
     apiKey: apiKey || undefined,
     endpoint: endpoint || null
   }).catch(() => {});
+  if (apiKey) recordResellerUsage(apiKey, inTokens + outTokens, 0, { provider, model, endpoint }).catch(() => {});
 }
