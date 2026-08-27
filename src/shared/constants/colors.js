@@ -13,9 +13,9 @@ export const COLORS = {
 
   // Light theme backgrounds
   light: {
-    bg: "#8b5cf6",
-    bgAlt: "#7c3aed",
-    surface: "#f5f3ff",
+    bg: "#b39ddb",
+    bgAlt: "#9575cd",
+    surface: "#faf8ff",
     sidebar: "rgba(237, 233, 254, 0.96)",
     border: "rgba(30, 27, 75, 0.35)",
     textMain: "#312e81",
