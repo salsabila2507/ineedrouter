@@ -28,12 +28,12 @@
   --color-primary-hover: var(--color-brand-600);
 
   /* Surfaces & backgrounds (light - lavender paper like the public site) */
-  --color-bg: #e9e2ff;
-  --color-bg-alt: #dcd2ff;
+  --color-bg: #c4b5fd;
+  --color-bg-alt: #a78bfa;
   --color-surface: #ffffff;
-  --color-surface-2: #eee8ff;
-  --color-surface-3: #ded5ff;
-  --color-sidebar: rgba(239, 234, 255, 0.94);
+  --color-surface-2: #ddd6fe;
+  --color-surface-3: #c4b5fd;
+  --color-sidebar: rgba(237, 233, 254, 0.96);
 
   /* Borders */
   --color-border: #1e1b4b;
@@ -170,11 +170,11 @@ select {
   --color-info: var(--color-info);
 
   /* Static fallbacks (explicit per-mode usage if needed) */
-  --color-bg-light: #e9e2ff;
+  --color-bg-light: #c4b5fd;
   --color-bg-dark: #14132b;
   --color-surface-light: #ffffff;
   --color-surface-dark: #201e46;
-  --color-sidebar-light: rgba(239, 234, 255, 0.94);
+  --color-sidebar-light: rgba(237, 233, 254, 0.96);
   --color-sidebar-dark: #1F1F1E;
   --color-border-light: #e5e7eb;
   --color-border-dark: #333333;
