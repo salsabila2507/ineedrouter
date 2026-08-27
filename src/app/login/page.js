@@ -235,7 +235,7 @@ export default function LoginPage() {
                   )}
                   {resetHint && (
                     <p className="text-xs text-text-muted">
-                      Forgot password? Open <code className="bg-sidebar px-1 rounded">9router</code> CLI on the host → <b>Settings</b> → <b>Reset Password to Default</b>.
+                      Forgot password? Open the <code className="bg-sidebar px-1 rounded">iNeedRouter</code> host console → <b>Settings</b> → <b>Reset Password to Default</b>.
                     </p>
                   )}
                 </div>

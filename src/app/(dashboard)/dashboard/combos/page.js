@@ -204,6 +204,10 @@ export default function CombosPage() {
           <ul className="text-sm text-text-muted mt-2 flex flex-col gap-1">
             <li><span className="font-medium text-text-main">Fallback</span> — tries models in order (next on failure)</li>
             <li><span className="font-medium text-text-main">Round Robin</span> — rotates models across requests to spread load</li>
+            <li><span className="font-medium text-text-main">Auto</span> — scores health, remaining quota, price, and measured latency</li>
+            <li><span className="font-medium text-text-main">Auto Fast</span> — prioritizes the fastest recently measured model</li>
+            <li><span className="font-medium text-text-main">Auto Cheap</span> — prioritizes the lowest estimated token cost</li>
+            <li><span className="font-medium text-text-main">Quota Aware</span> — favors providers with more remaining capacity</li>
             <li><span className="font-medium text-text-main">Fusion</span> — queries all models in parallel, then a judge synthesizes one answer. Best quality, but costs the most: every request bills all panel models + the judge (N+1 calls)</li>
           </ul>
         </div>
@@ -298,6 +302,13 @@ const STRATEGY_OPTIONS = [
   { value: "fusion", label: "Fusion — panel + judge" },
 ];
 
+const STRATEGY_DESCRIPTIONS = {
+  auto: "Balanced score: health + quota + cost + latency",
+  "auto/fast": "Live score favors recently faster responses",
+  "auto/cheap": "Live score favors lower estimated token cost",
+  "quota-aware": "Live score favors providers with more quota",
+};
+
 function ComboCard({ combo, getCaps, activeProviders = [], copied, onCopy, onEdit, onDelete, strategy = {}, onSetStrategy }) {
   const [showJudgeSelect, setShowJudgeSelect] = useState(false);
   const current = strategy.fallbackStrategy || "fallback";
@@ -364,6 +375,12 @@ function ComboCard({ combo, getCaps, activeProviders = [], copied, onCopy, onEdi
               onChange={(e) => onSetStrategy({ fallbackStrategy: e.target.value })}
               selectClassName="py-1.5 text-xs"
             />
+            {STRATEGY_DESCRIPTIONS[current] && (
+              <p className="mt-1 text-[10px] leading-tight text-primary">
+                <span className="material-symbols-outlined mr-1 align-[-2px] text-[12px]">route</span>
+                {STRATEGY_DESCRIPTIONS[current]}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-3 gap-1 sm:flex">
