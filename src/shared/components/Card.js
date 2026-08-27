@@ -25,9 +25,9 @@ export default function Card({
   return (
     <div
       className={cn(
-        "bg-surface border border-border-subtle",
-        elev ? "rounded-[14px] shadow-[var(--shadow-elev)]" : "rounded-[14px] shadow-[var(--shadow-soft)]",
-        hover && "hover:shadow-[var(--shadow-warm)] hover:border-brand-500/30 transition-all cursor-pointer",
+        "relative overflow-hidden bg-surface border-2 border-border",
+        elev ? "shadow-[8px_8px_0_rgba(76,29,149,0.28)]" : "shadow-[5px_5px_0_rgba(76,29,149,0.20)]",
+        hover && "hover:-translate-y-1 hover:shadow-[8px_8px_0_rgba(76,29,149,0.34)] hover:border-primary transition-all cursor-pointer",
         paddings[padding],
         className
       )}
@@ -62,8 +62,8 @@ Card.Section = function CardSection({ children, className, ...props }) {
   return (
     <div
       className={cn(
-        "p-4 rounded-[10px]",
-        "bg-bg border border-border-subtle",
+        "p-4 border-l-4 border-l-primary bg-surface-2",
+        "border-2 border-border bg-surface-2",
         className
       )}
       {...props}
@@ -77,7 +77,7 @@ Card.Row = function CardRow({ children, className, ...props }) {
   return (
     <div
       className={cn(
-        "p-3 -mx-3 px-3 transition-colors",
+        "p-3 -mx-3 px-3 border-l-2 border-transparent transition-colors",
         "border-b border-border-subtle last:border-b-0",
         "hover:bg-surface-2/50",
         className
@@ -98,7 +98,7 @@ Card.ListItem = function CardListItem({
   return (
     <div
       className={cn(
-        "group flex items-center justify-between p-3 -mx-3 px-3",
+        "group flex items-center justify-between p-3 -mx-3 px-3 border-l-2 border-transparent",
         "border-b border-border-subtle last:border-b-0",
         "hover:bg-surface-2/50 transition-colors",
         className

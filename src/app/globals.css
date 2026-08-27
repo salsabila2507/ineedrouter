@@ -199,6 +199,11 @@ select {
   --font-heading: var(--font-space-grotesk), var(--font-dm-sans), sans-serif;
 }
 
+/* iNeed watermark: decorative only, never captures input */
+body::before { content: "iNeed"; position: fixed; inset: auto -6vw 5vh auto; z-index: 0; pointer-events: none; font-family: var(--font-heading); font-size: clamp(8rem, 24vw, 24rem); font-weight: 800; letter-spacing: -0.08em; line-height: 0.8; color: var(--color-primary); opacity: 0.10; transform: rotate(-12deg); user-select: none; }
+body > * { position: relative; z-index: 1; }
+.dark body::before { opacity: 0.07; }
+
 /* Base */
 body {
   background-color: var(--color-bg);
