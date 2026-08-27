@@ -25,9 +25,9 @@ export default function Card({
   return (
     <div
       className={cn(
-        "relative overflow-hidden bg-surface border-2 border-border",
-        elev ? "shadow-[8px_8px_0_rgba(76,29,149,0.28)]" : "shadow-[5px_5px_0_rgba(76,29,149,0.20)]",
-        hover && "hover:-translate-y-1 hover:shadow-[8px_8px_0_rgba(76,29,149,0.34)] hover:border-primary transition-all cursor-pointer",
+        "relative overflow-hidden bg-gradient-to-br from-surface via-surface to-surface-2 border-2 border-border rounded-[1.5rem_0.5rem_1.5rem_0.5rem]",
+        elev ? "shadow-[0_14px_30px_rgba(76,29,149,0.20)]" : "shadow-[0_8px_20px_rgba(76,29,149,0.14)]",
+        hover && "hover:-translate-y-1 hover:shadow-[0_14px_30px_rgba(76,29,149,0.24)] hover:border-primary transition-all cursor-pointer",
         paddings[padding],
         className
       )}
@@ -62,8 +62,8 @@ Card.Section = function CardSection({ children, className, ...props }) {
   return (
     <div
       className={cn(
-        "p-4 border-l-4 border-l-primary bg-surface-2",
-        "border-2 border-border bg-surface-2",
+        "p-4 rounded-[1rem_0.35rem_1rem_0.35rem] border-l-4 border-l-primary bg-surface-2/80",
+        "border-2 border-border",
         className
       )}
       {...props}
