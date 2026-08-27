@@ -1,0 +1,14 @@
+export default {
+  version: 2,
+  name: "reseller-foundation",
+  up(db) {
+    db.exec(`CREATE TABLE IF NOT EXISTS resellerTenants (id TEXT PRIMARY KEY, slug TEXT UNIQUE NOT NULL, name TEXT NOT NULL, status TEXT NOT NULL DEFAULT "active", metadata TEXT NOT NULL DEFAULT "{}", createdAt TEXT NOT NULL, updatedAt TEXT NOT NULL)`);
+    db.exec(`CREATE TABLE IF NOT EXISTS resellerPlans (id TEXT PRIMARY KEY, tenantId TEXT NOT NULL, name TEXT NOT NULL, priceCents INTEGER NOT NULL DEFAULT 0, markupBps INTEGER NOT NULL DEFAULT 0, monthlyTokenLimit INTEGER NOT NULL DEFAULT 0, requestsPerMinute INTEGER NOT NULL DEFAULT 60, isActive INTEGER NOT NULL DEFAULT 1, metadata TEXT NOT NULL DEFAULT "{}", createdAt TEXT NOT NULL, updatedAt TEXT NOT NULL)`);
+    db.exec(`CREATE TABLE IF NOT EXISTS resellerCustomers (id TEXT PRIMARY KEY, tenantId TEXT NOT NULL, planId TEXT, email TEXT, name TEXT NOT NULL, status TEXT NOT NULL DEFAULT "active", balanceCents INTEGER NOT NULL DEFAULT 0, quotaTokens INTEGER NOT NULL DEFAULT 0, quotaUsedTokens INTEGER NOT NULL DEFAULT 0, metadata TEXT NOT NULL DEFAULT "{}", createdAt TEXT NOT NULL, updatedAt TEXT NOT NULL)`);
+    db.exec(`CREATE TABLE IF NOT EXISTS resellerKeyMeta (apiKeyId TEXT PRIMARY KEY, tenantId TEXT NOT NULL, customerId TEXT NOT NULL, label TEXT, lastUsedAt TEXT, createdAt TEXT NOT NULL)`);
+    db.exec(`CREATE TABLE IF NOT EXISTS resellerLedger (id TEXT PRIMARY KEY, tenantId TEXT NOT NULL, customerId TEXT NOT NULL, apiKeyId TEXT, kind TEXT NOT NULL, amountCents INTEGER NOT NULL DEFAULT 0, tokens INTEGER NOT NULL DEFAULT 0, status TEXT NOT NULL DEFAULT "posted", idempotencyKey TEXT UNIQUE, metadata TEXT NOT NULL DEFAULT "{}", createdAt TEXT NOT NULL)`);
+    db.exec(`CREATE TABLE IF NOT EXISTS resellerRateBuckets (bucketKey TEXT PRIMARY KEY, windowStart INTEGER NOT NULL, requestCount INTEGER NOT NULL DEFAULT 0)`);
+    db.exec(`CREATE TABLE IF NOT EXISTS resellerPaymentEvents (id TEXT PRIMARY KEY, tenantId TEXT NOT NULL, customerId TEXT, provider TEXT NOT NULL, externalId TEXT NOT NULL, status TEXT NOT NULL, amountCents INTEGER NOT NULL DEFAULT 0, currency TEXT NOT NULL DEFAULT "USD", payload TEXT NOT NULL DEFAULT "{}", createdAt TEXT NOT NULL)`);
+    for (const sql of ["CREATE INDEX IF NOT EXISTS idx_rt_slug ON resellerTenants(slug)", "CREATE INDEX IF NOT EXISTS idx_rp_tenant ON resellerPlans(tenantId)", "CREATE INDEX IF NOT EXISTS idx_rc_tenant ON resellerCustomers(tenantId)", "CREATE INDEX IF NOT EXISTS idx_rkm_customer ON resellerKeyMeta(customerId)", "CREATE INDEX IF NOT EXISTS idx_rl_customer ON resellerLedger(customerId, createdAt DESC)", "CREATE INDEX IF NOT EXISTS idx_rr_window ON resellerRateBuckets(windowStart)", "CREATE UNIQUE INDEX IF NOT EXISTS idx_rpe_external ON resellerPaymentEvents(provider, externalId)"]) db.exec(sql);
+  },
+};

@@ -7,7 +7,7 @@ import {
   extractApiKey,
   isValidApiKey,
 } from "../services/auth.js";
-import { getSettings } from "@/lib/localDb";
+import { getSettings, authorizeResellerRequest } from "@/lib/localDb";
 import { getModelInfo, getComboModels } from "../services/model.js";
 import { handleChatCore } from "open-sse/handlers/chatCore.js";
 import { DEFAULT_HEADROOM_URL } from "@/lib/headroom/detect";
@@ -71,6 +71,16 @@ export async function handleChat(request, clientRawRequest = null) {
     if (!valid) {
       log.warn("AUTH", "Invalid API key (requireApiKey=true)");
       return errorResponse(HTTP_STATUS.UNAUTHORIZED, "Invalid API key");
+    }
+  }
+
+  // Opt-in reseller enforcement for customer-managed keys. Legacy keys remain unchanged.
+  if (apiKey) {
+    const estimatedTokens = Math.max(1, Math.ceil(JSON.stringify(body).length / 4));
+    const reseller = await authorizeResellerRequest(apiKey, estimatedTokens);
+    if (reseller.enforced && !reseller.ok) {
+      const message = reseller.code === "LIMIT_EXCEEDED" ? "Reseller quota or rate limit exceeded" : "Reseller account disabled";
+      return errorResponse(429, message);
     }
   }
 
