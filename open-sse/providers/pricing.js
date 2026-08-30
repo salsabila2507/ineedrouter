@@ -148,7 +148,7 @@ export const PROVIDER_PRICING = {
   // TokenRouter — exact rates from https://api.tokenrouter.com/api/pricing ($1/1M tokens).
   // Ratio→USD: input = model_ratio×2, output = model_ratio×completion_ratio×2.
   // These override the canonical MODEL_PRICING/PATTERN_PRICING, whose rates often
-  // differ from TokenRouter's reseller pricing.
+  // differ from TokenRouter's published pricing.
   tokenrouter: {
     "MiniMax-M3": { input: 0.3, output: 1.2, cached: 0.06, reasoning: 1.2 },
     "anthropic/claude-fable-5": { input: 10, output: 50, cached: 1.0, cache_creation: 12.5, reasoning: 50 },

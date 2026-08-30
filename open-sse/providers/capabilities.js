@@ -302,9 +302,9 @@ export const PATTERN_CAPABILITIES = [
   { pattern: "*pplx*",          caps: { search: true, contextWindow: 128000 } },
   { pattern: "*perplexity*",    caps: { search: true, contextWindow: 128000 } },
 
-  // ── Poolside Laguna (resellers: openrouter/nvidia/kilocode/vercel/...) ──
+  // ── Poolside Laguna (available through openrouter/nvidia/kilocode/vercel/...) ──
   // Free tiers cap S 2.1 well below the paid 1M window → match the free suffix
-  // (":free" or "-free", depending on reseller) before the plain id.
+  // (":free" or "-free", depending on the service) before the plain id.
   { pattern: "*laguna-s-2.1*free*", caps: { reasoning: true, thinkingFormat: "openai", contextWindow: 200000, maxOutput: 32000 } },
   { pattern: "*laguna-s-2.1*",  caps: { reasoning: true, thinkingFormat: "openai", contextWindow: 1000000, maxOutput: 32000 } },
   { pattern: "*laguna*",        caps: { reasoning: true, thinkingFormat: "openai", contextWindow: 200000, maxOutput: 32000 } },
