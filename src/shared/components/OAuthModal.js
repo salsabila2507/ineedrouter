@@ -232,6 +232,8 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
         "kilocode",
         "codebuddy-cn",
         "codebuddy-intl",
+        "workbuddy",
+        "nous",
         "qoder",
         "grok-cli",
       ];

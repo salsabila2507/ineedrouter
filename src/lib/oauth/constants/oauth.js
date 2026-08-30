@@ -117,6 +117,12 @@ export const CODEBUDDY_CONFIG = { ...PROVIDER_OAUTH["codebuddy-cn"] };
 // CodeBuddy International — same shape as CN, .ai domain (mirror of codebuddy-cn).
 export const CODEBUDDY_INTL_CONFIG = { ...PROVIDER_OAUTH["codebuddy-intl"] };
 
+// WorkBuddy OAuth Configuration (Browser OAuth Polling Flow)
+export const WORKBUDDY_CONFIG = { ...PROVIDER_OAUTH["workbuddy"] };
+
+// Nous Portal OAuth Configuration (Hermes Agent device-code flow)
+export const NOUS_CONFIG = { ...PROVIDER_OAUTH["nous"] };
+
 // Kimchi OAuth Configuration (Browser token callback flow)
 export const KIMCHI_CONFIG = { ...PROVIDER_OAUTH["kimchi"] };
 
@@ -218,6 +224,8 @@ export const PROVIDERS = {
   GITLAB: "gitlab",
   CODEBUDDY: "codebuddy-cn",
   CODEBUDDY_INTL: "codebuddy-intl",
+  WORKBUDDY: "workbuddy",
+  NOUS: "nous",
   KIMCHI: "kimchi",
   GROK_CLI: "grok-cli",
   TRAE: "trae",
