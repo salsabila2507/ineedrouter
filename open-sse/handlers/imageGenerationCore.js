@@ -35,6 +35,7 @@ export async function handleImageGenerationCore({
   binaryOutput = false,
   onCredentialsRefreshed,
   onRequestSuccess,
+  publicBaseUrl,
 }) {
   const { provider, model } = modelInfo;
 
@@ -48,6 +49,27 @@ export async function handleImageGenerationCore({
       HTTP_STATUS.BAD_REQUEST,
       `Provider '${provider}' does not support image generation`
     );
+  }
+
+  if (Array.isArray(adapter.fallbackProviders) && adapter.fallbackProviders.length > 0) {
+    let lastResult = null;
+    for (const fallbackProvider of adapter.fallbackProviders) {
+      const result = await handleImageGenerationCore({
+        body,
+        modelInfo: { provider: fallbackProvider, model },
+        credentials,
+        log,
+        streamToClient,
+        binaryOutput,
+        onCredentialsRefreshed,
+        onRequestSuccess,
+        publicBaseUrl,
+      });
+      if (result.success) return result;
+      lastResult = result;
+      log?.warn?.("IMAGE", fallbackProvider + " failed for " + provider + "/" + model + ": " + result.error);
+    }
+    return lastResult || createErrorResult(HTTP_STATUS.BAD_GATEWAY, "Image generation failed");
   }
 
   // Executor-delegating adapters: skip manual URL/headers/body, use the proven executor flow
@@ -96,7 +118,7 @@ export async function handleImageGenerationCore({
   let requestBody;
 
   try {
-    url = adapter.buildUrl(model, credentials);
+    url = adapter.buildUrl(model, credentials, body);
     requestBody = await adapter.buildBody(model, body);
     headers = adapter.buildHeaders(credentials, requestBody, model, body);
   } catch (error) {
@@ -106,16 +128,25 @@ export async function handleImageGenerationCore({
   log?.debug?.("IMAGE", `${provider.toUpperCase()} | ${model} | prompt="${body.prompt.slice(0, 50)}..."`);
 
   let providerResponse;
+  const controller = new AbortController();
+  const timeoutMs = Number.isFinite(adapter.timeoutMs) ? adapter.timeoutMs : 60000;
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
   try {
     providerResponse = await fetch(url, {
-      method: "POST",
+      method: adapter.method || "POST",
       headers,
-      body: serializeRequestBody(requestBody),
+      body: requestBody == null ? undefined : serializeRequestBody(requestBody),
+      signal: controller.signal,
     });
   } catch (error) {
-    const errMsg = formatProviderError(error, provider, model, HTTP_STATUS.BAD_GATEWAY);
+    const normalizedError = error?.name === "AbortError"
+      ? new Error("Upstream request timed out after " + timeoutMs + "ms")
+      : error;
+    const errMsg = formatProviderError(normalizedError, provider, model, HTTP_STATUS.BAD_GATEWAY);
     log?.debug?.("IMAGE", `Fetch error: ${errMsg}`);
     return createErrorResult(HTTP_STATUS.BAD_GATEWAY, errMsg);
+  } finally {
+    clearTimeout(timeoutId);
   }
 
   // Handle 401/403 — try token refresh (skipped for noAuth providers)
@@ -140,11 +171,11 @@ export async function handleImageGenerationCore({
       try {
         const retryBody = await adapter.buildBody(model, body);
         const retryHeaders = adapter.buildHeaders(credentials, retryBody, model, body);
-        const retryUrl = adapter.buildUrl(model, credentials);
+        const retryUrl = adapter.buildUrl(model, credentials, body);
         providerResponse = await fetch(retryUrl, {
-          method: "POST",
+          method: adapter.method || "POST",
           headers: retryHeaders,
-          body: serializeRequestBody(retryBody),
+          body: retryBody == null ? undefined : serializeRequestBody(retryBody),
         });
       } catch {
         log?.warn?.("TOKEN", `${provider.toUpperCase()} | retry after refresh failed`);
@@ -174,6 +205,7 @@ export async function handleImageGenerationCore({
         requestBody,
         model,
         body,
+        publicBaseUrl,
       });
       // Codex streaming case: returns an SSE Response directly
       if (parsed?.sseResponse) {
@@ -189,7 +221,12 @@ export async function handleImageGenerationCore({
   if (onRequestSuccess) await onRequestSuccess();
 
   // Normalize → OpenAI-compatible shape
-  const normalized = adapter.normalize(parsed, body.prompt);
+  let normalized;
+  try {
+    normalized = adapter.normalize(parsed, body.prompt);
+  } catch (normalizeError) {
+    return createErrorResult(HTTP_STATUS.BAD_GATEWAY, normalizeError.message || ("Invalid response from " + provider));
+  }
 
   // Already in OpenAI shape? skip re-normalize
   const finalBody = (normalized.created && Array.isArray(normalized.data)) ? normalized : parsed;

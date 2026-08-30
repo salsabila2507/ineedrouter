@@ -7,7 +7,9 @@ import {
 } from "../services/auth.js";
 import { getSettings } from "@/lib/localDb";
 import { getModelInfo, getComboModels } from "../services/model.js";
+import { FREE_IMAGE_MODEL_IDS, resolveFreeImageModel } from "open-sse/handlers/imageProviders/freeProviders.js";
 import { handleImageGenerationCore } from "open-sse/handlers/imageGenerationCore.js";
+import { getImageAdapter } from "open-sse/handlers/imageProviders/index.js";
 import { errorResponse, unavailableResponse } from "open-sse/utils/error.js";
 import { HTTP_STATUS } from "open-sse/config/runtimeConfig.js";
 import { updateProviderCredentials, checkAndRefreshToken } from "../services/tokenRefresh.js";
@@ -44,7 +46,13 @@ export async function handleImageGeneration(request) {
   }
 
   if (!modelStr) return errorResponse(HTTP_STATUS.BAD_REQUEST, "Missing model");
+  if (typeof modelStr !== "string" || modelStr.length > 200) return errorResponse(HTTP_STATUS.BAD_REQUEST, "Invalid model ID");
+  if (!FREE_IMAGE_MODEL_IDS.has(modelStr) && modelStr.startsWith("ineed/")) {
+    return errorResponse(HTTP_STATUS.BAD_REQUEST, "Unknown image model: " + modelStr);
+  }
   if (!body.prompt) return errorResponse(HTTP_STATUS.BAD_REQUEST, "Missing required field: prompt");
+
+  const publicBaseUrl = url.protocol + "//" + url.host;
 
   // Combo expansion: model may be a combo name → run fallback/round-robin across models
   const comboModels = await getComboModels(modelStr);
@@ -56,7 +64,7 @@ export async function handleImageGeneration(request) {
     return handleComboChat({
       body,
       models: comboModels,
-      handleSingleModel: (b, m) => handleSingleModelImage(b, m, { wantsStream, binaryOutput, preferredConnectionId }),
+      handleSingleModel: (b, m) => handleSingleModelImage(b, m, { wantsStream, binaryOutput, preferredConnectionId, publicBaseUrl }),
       log,
       comboName: modelStr,
       comboStrategy,
@@ -64,22 +72,24 @@ export async function handleImageGeneration(request) {
     });
   }
 
-  return handleSingleModelImage(body, modelStr, { wantsStream, binaryOutput, preferredConnectionId });
+  return handleSingleModelImage(body, modelStr, { wantsStream, binaryOutput, preferredConnectionId, publicBaseUrl });
 }
 
-async function handleSingleModelImage(body, modelStr, { wantsStream, binaryOutput, preferredConnectionId } = {}) {
-  const modelInfo = await getModelInfo(modelStr);
+async function handleSingleModelImage(body, modelStr, { wantsStream, binaryOutput, preferredConnectionId, publicBaseUrl } = {}) {
+  const modelInfo = resolveFreeImageModel(modelStr) || await getModelInfo(modelStr);
   if (!modelInfo.provider) return errorResponse(HTTP_STATUS.BAD_REQUEST, "Invalid model format");
 
   const { provider, model } = modelInfo;
 
   // noAuth providers — no credential needed
-  if (NO_AUTH_PROVIDERS.has(provider)) {
+  const adapter = getImageAdapter(provider);
+  if (NO_AUTH_PROVIDERS.has(provider) || adapter?.noAuth) {
     const result = await handleImageGenerationCore({
       body,
       modelInfo: { provider, model },
       credentials: null,
       binaryOutput,
+      publicBaseUrl,
     });
     if (result.success) return result.response;
     return errorResponse(result.status || HTTP_STATUS.BAD_GATEWAY, result.error || "Image generation failed");
@@ -113,6 +123,7 @@ async function handleSingleModelImage(body, modelStr, { wantsStream, binaryOutpu
       credentials: refreshedCredentials,
       streamToClient: wantsStream,
       binaryOutput,
+      publicBaseUrl,
       onCredentialsRefreshed: async (newCreds) => {
         await updateProviderCredentials(credentials.connectionId, {
           accessToken: newCreds.accessToken,

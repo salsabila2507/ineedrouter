@@ -7,7 +7,7 @@ import {
   extractApiKey,
   isValidApiKey,
 } from "../services/auth.js";
-import { getSettings, authorizeResellerRequest } from "@/lib/localDb";
+import { getSettings } from "@/lib/localDb";
 import { getModelInfo, getComboModels } from "../services/model.js";
 import { handleChatCore } from "open-sse/handlers/chatCore.js";
 import { DEFAULT_HEADROOM_URL } from "@/lib/headroom/detect";
@@ -20,6 +20,7 @@ import { handleBypassRequest } from "open-sse/utils/bypassHandler.js";
 import { HTTP_STATUS } from "open-sse/config/runtimeConfig.js";
 import { detectFormatByEndpoint } from "open-sse/translator/formats.js";
 import * as log from "../utils/logger.js";
+import { FREE_IMAGE_MODEL_IDS } from "open-sse/handlers/imageProviders/freeProviders.js";
 import { updateProviderCredentials, checkAndRefreshToken } from "../services/tokenRefresh.js";
 import { getProjectIdForConnection } from "open-sse/services/projectId.js";
 
@@ -74,19 +75,12 @@ export async function handleChat(request, clientRawRequest = null) {
     }
   }
 
-  // Opt-in reseller enforcement for customer-managed keys. Legacy keys remain unchanged.
-  if (apiKey) {
-    const estimatedTokens = Math.max(1, Math.ceil(JSON.stringify(body).length / 4));
-    const reseller = await authorizeResellerRequest(apiKey, estimatedTokens);
-    if (reseller.enforced && !reseller.ok) {
-      const message = reseller.code === "LIMIT_EXCEEDED" ? "Reseller quota or rate limit exceeded" : "Reseller account disabled";
-      return errorResponse(429, message);
-    }
-  }
-
   if (!modelStr) {
     log.warn("CHAT", "Missing model");
     return errorResponse(HTTP_STATUS.BAD_REQUEST, "Missing model");
+  }
+  if (FREE_IMAGE_MODEL_IDS.has(modelStr)) {
+    return errorResponse(HTTP_STATUS.BAD_REQUEST, "Image generation models must use /v1/images/generations");
   }
 
   // Bypass naming/warmup requests before combo rotation to avoid wasting rotation slots

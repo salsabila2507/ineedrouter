@@ -11,6 +11,7 @@ import { resolveKiroModels } from "open-sse/services/kiroModels.js";
 import { resolveKimchiModels } from "open-sse/services/kimchiModels.js";
 import { resolveQoderModels } from "open-sse/services/qoderModels.js";
 import { resolveCopilotModels } from "open-sse/services/copilotModels.js";
+import { resolveClineModels } from "open-sse/services/clineModels.js";
 import { resolveClinepassModels } from "open-sse/services/clinepassModels.js";
 import { resolveGrokCliModels } from "open-sse/services/grokCliModels.js";
 import { resolveCursorModels } from "open-sse/services/cursorModels.js";
@@ -18,6 +19,7 @@ import { resolveZedModels } from "open-sse/shared/zedAuth.js";
 import { updateProviderCredentials } from "@/sse/services/tokenRefresh";
 import { resolveConnectionProxyConfig } from "@/lib/network/connectionProxy";
 import { capabilitiesFromServiceKind, getCapabilitiesForModel } from "open-sse/providers/capabilities.js";
+import { FREE_IMAGE_MODELS } from "open-sse/handlers/imageProviders/freeProviders.js";
 
 // Per-provider live model resolvers. Each receives a connection record and
 // returns { models: [{ id, name? }, ...] } | null on failure.
@@ -66,6 +68,12 @@ const LIVE_MODEL_RESOLVERS = {
           existingProviderSpecificData: conn.providerSpecificData || {},
         });
       },
+    });
+    return result?.models?.length ? { models: result.models } : null;
+  },
+  cline: async (conn) => {
+    const result = await resolveClineModels({
+      accessToken: conn.accessToken,
     });
     return result?.models?.length ? { models: result.models } : null;
   },
@@ -291,6 +299,10 @@ export async function buildModelsList(kindFilter, options = {}) {
   }
 
   const models = [];
+
+  if (kindFilter.includes("image")) {
+    models.push(...FREE_IMAGE_MODELS);
+  }
 
   // Combos first (filtered by kind). Web combos expose `kind` so AI knows search vs fetch.
   for (const combo of combos) {
@@ -562,7 +574,9 @@ export async function GET(request) {
   try {
     // Detect cross-instance recursive /models fetch (another 9router fetching our /models)
     const skipDynamicFetch = request?.headers?.get(INTERNAL_MODELS_FETCH_HEADER) === "1";
-    const data = await buildModelsList([LLM_KIND], { skipDynamicFetch });
+    const llmModels = await buildModelsList([LLM_KIND], { skipDynamicFetch });
+    const seen = new Set(llmModels.map((model) => model.id));
+    const data = [...llmModels, ...FREE_IMAGE_MODELS.filter((model) => !seen.has(model.id))];
     return Response.json({ object: "list", data }, {
       headers: { "Access-Control-Allow-Origin": "*" },
     });

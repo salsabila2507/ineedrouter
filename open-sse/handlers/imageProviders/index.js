@@ -12,6 +12,8 @@ import blackForestLabs from "./blackForestLabs.js";
 import runwayml from "./runwayml.js";
 import cloudflareAi from "./cloudflareAi.js";
 import antigravity from "./antigravity.js";
+import pollinations from "./pollinations.js";
+import prexzy, { prexzyAIWriter, prexzyGenImage } from "./prexzy.js";
 
 const ADAPTERS = {
   openai: createOpenAIAdapter("openai"),
@@ -32,6 +34,15 @@ const ADAPTERS = {
   "black-forest-labs": blackForestLabs,
   runwayml,
   "cloudflare-ai": cloudflareAi,
+  pollinations,
+  prexzy,
+  "prexzy-aiwriter": prexzyAIWriter,
+  "prexzy-genimage": prexzyGenImage,
+  "ineed-free-image": {
+    noAuth: true,
+    timeoutMs: 45000,
+    fallbackProviders: ["pollinations", "prexzy"],
+  },
 };
 
 export function getImageAdapter(provider) {
