@@ -1,12 +1,23 @@
+<div align="center">
+
 # iNeedRouter
 
-**Multi-provider AI gateway with a reseller-ready dashboard** — one OpenAI/Anthropic-compatible endpoint that routes traffic across 40+ upstream providers with automatic fallback, plus a full operator dashboard for keys, models, usage, and routing policies.
+**A focused AI gateway for teams that want one reliable endpoint.**
 
-iNeedRouter is a maintained fork of [9router](https://github.com/decolua/9router) (MIT). The complete 9router feature set is preserved; iNeedRouter adds operator branding, the iNeed design system, and a reseller layer on top.
+Route OpenAI- and Anthropic-shaped requests across 40+ providers, keep credentials in one operator console, and let fallback policies handle upstream variance.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[Documentation](docs/ARCHITECTURE.md) · [Contribute](https://github.com/salsabila2507/ineedrouter/pulls) · [Report an issue](https://github.com/salsabila2507/ineedrouter/issues)
+
+[![License](https://img.shields.io/badge/license-MIT-635BFF.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/salsabila2507/ineedrouter?style=flat&color=14B8A6)](https://github.com/salsabila2507/ineedrouter/stargazers)
+[![Node.js](https://img.shields.io/badge/Node.js-20%2B-22C55E.svg)](https://nodejs.org/)
+
+</div>
+
+iNeedRouter is a maintained fork of [9router](https://github.com/decolua/9router) (MIT). It preserves the upstream routing surface while adding iNeed branding, operator workflows, and selected routing improvements inspired by OmniRoute and ZRouter.
 
 ## Highlights
+- **Three interface languages** — switch freely between Indonesian, English, and Simplified Chinese; your choice is persisted on the device.
 
 - **One endpoint, many providers** — `POST /v1/chat/completions` (OpenAI format), `POST /v1/messages` (Anthropic format), plus image, TTS, STT, embeddings, web search, web fetch, and video generation.
 - **Automatic fallback** — model combos and multi-account fallback keep requests alive when an upstream fails.

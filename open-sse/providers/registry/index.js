@@ -75,8 +75,10 @@ import p72 from "./perplexity.js";
 import p73 from "./perplexity-agent.js";
 import p74 from "./playht.js";
 import p75 from "./qoder.js";
+import p76 from "./pollinations.js";
 import p77 from "./recraft.js";
 import p78 from "./runwayml.js";
+import p101 from "./prexzy.js";
 import p79 from "./sdwebui.js";
 import p80 from "./searchapi.js";
 import p81 from "./searxng.js";
@@ -121,6 +123,8 @@ import p118 from "./selfhosted-tts.js";
 import p119 from "./selfhosted-embedding.js";
 import p120 from "./fish-audio.js";
 import p121 from "./alitp-intl.js";
+import p122 from "./workbuddy.js";
+import p123 from "./nous.js";
 
 export default [
   p0,
@@ -199,6 +203,7 @@ export default [
   p73,
   p74,
   p75,
+  p76,
   p77,
   p78,
   p79,
@@ -223,6 +228,7 @@ export default [
   p98,
   p99,
   p100,
+  p101,
   // p102, // trae — hidden, no tool calling
   p103,
   p105,
@@ -243,4 +249,6 @@ export default [
   p119,
   p120,
   p121,
+  p122,
+  p123,
 ];

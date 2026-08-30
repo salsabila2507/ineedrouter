@@ -20,14 +20,15 @@ export async function POST(request, { params }) {
 
     const providerId = connection.provider;
     const isCompatible = isOpenAICompatibleProvider(providerId) || isAnthropicCompatibleProvider(providerId);
+    const usesLiveCatalog = isCompatible || providerId === "workbuddy" || providerId === "nous";
     const alias = PROVIDER_ID_TO_ALIAS[providerId] || providerId;
 
     let models = getProviderModels(alias);
 
     const baseUrl = `http://127.0.0.1:${process.env.PORT || UPDATER_CONFIG.appPort}`;
 
-    // Compatible providers: fetch live model list
-    if (isCompatible && models.length === 0) {
+    // Providers with account-specific catalogs: fetch live model list
+    if (usesLiveCatalog && models.length === 0) {
       try {
         const modelsRes = await fetch(`${baseUrl}/api/providers/${id}/models`);
         if (modelsRes.ok) {

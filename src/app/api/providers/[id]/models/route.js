@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getProviderConnectionById } from "@/models";
 import { isOpenAICompatibleProvider, isAnthropicCompatibleProvider } from "@/shared/constants/providers";
 import { GEMINI_CONFIG } from "@/lib/oauth/constants/oauth";
-import { refreshGoogleToken, refreshCodexToken, updateProviderCredentials } from "@/sse/services/tokenRefresh";
+import { refreshGoogleToken, refreshCodexToken, refreshWorkbuddyToken, refreshNousToken, updateProviderCredentials } from "@/sse/services/tokenRefresh";
 import { resolveOllamaLocalHost } from "open-sse/config/providers.js";
 import { getModelsByProviderId } from "open-sse/config/providerModels.js";
 import { resolveKiroModels } from "open-sse/services/kiroModels.js";
@@ -11,6 +11,9 @@ import { resolveQoderModels } from "open-sse/services/qoderModels.js";
 import { resolveGrokCliModels } from "open-sse/services/grokCliModels.js";
 import { resolveConnectionProxyConfig } from "@/lib/network/connectionProxy";
 import { resolveCursorModels } from "open-sse/services/cursorModels.js";
+import { resolveClineModels } from "open-sse/services/clineModels.js";
+import { fetchWorkbuddyModels, parseWorkbuddyModels } from "open-sse/services/workbuddyModels.js";
+import { fetchNousModels, parseNousModels } from "open-sse/services/nousModels.js";
 
 const GEMINI_CLI_MODELS_URL = "https://cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels";
 
@@ -103,6 +106,8 @@ const buildOAuthResolver = ({ refreshFn, fetchFn, parseFn, errorLabel }) => asyn
           accessToken: refreshed.accessToken,
           refreshToken: refreshed.refreshToken || refreshToken,
           expiresIn: refreshed.expiresIn,
+          providerSpecificData: refreshed.providerSpecificData,
+          existingProviderSpecificData: connection.providerSpecificData || {},
         });
         connection.accessToken = refreshed.accessToken;
         if (refreshed.refreshToken) connection.refreshToken = refreshed.refreshToken;
@@ -127,6 +132,16 @@ const buildOAuthResolver = ({ refreshFn, fetchFn, parseFn, errorLabel }) => asyn
 
 // Provider models endpoints configuration
 const PROVIDER_MODELS_CONFIG = {
+  cline: {
+    customResolver: async (connection) => {
+      const result = await resolveClineModels({ accessToken: connection.accessToken });
+      if (result?.models?.length) return { models: result.models };
+      return {
+        models: getStaticProviderModels("cline"),
+        warning: "Could not load the live Cline model catalog; showing the static fallback",
+      };
+    },
+  },
   claude: {
     url: "https://api.anthropic.com/v1/models",
     method: "GET",
@@ -367,6 +382,22 @@ const PROVIDER_MODELS_CONFIG = {
       }
       return { models: [], warning };
     },
+  },
+  workbuddy: {
+    customResolver: buildOAuthResolver({
+      refreshFn: (conn) => refreshWorkbuddyToken(conn.refreshToken),
+      fetchFn: (token, conn) => fetchWorkbuddyModels(conn, { token }),
+      parseFn: parseWorkbuddyModels,
+      errorLabel: "Failed to fetch WorkBuddy models"
+    })
+  },
+  nous: {
+    customResolver: buildOAuthResolver({
+      refreshFn: (conn) => refreshNousToken(conn.refreshToken),
+      fetchFn: (token, conn) => fetchNousModels(conn, { token }),
+      parseFn: parseNousModels,
+      errorLabel: "Failed to fetch Nous models"
+    })
   },
   "gemini-cli": {
     customResolver: buildOAuthResolver({

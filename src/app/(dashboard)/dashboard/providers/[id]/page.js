@@ -144,7 +144,8 @@ export default function ProviderDetailPage() {
   const supportsApiKeyAuth = !!APIKEY_PROVIDERS[providerId] || authModes.includes("apikey");
   const isFreeNoAuth = !!FREE_PROVIDERS[providerId]?.noAuth;
   const staticModels = getModelsByProviderId(providerId);
-  const models = providerId === "cursor" && liveModels.length > 0
+  const usesLiveCatalog = providerId === "cursor" || providerId === "cline" || providerId === "qoder" || providerId === "workbuddy" || providerId === "nous";
+  const models = usesLiveCatalog && liveModels.length > 0
     ? liveModels
     : staticModels;
   const providerAlias = getProviderAlias(providerId);
@@ -458,11 +459,11 @@ export default function ProviderDetailPage() {
     fetchDisabledModels();
   }, [fetchConnections, fetchAliases, fetchCustomModels, fetchDisabledModels]);
 
-  // Cursor's model availability is account-specific and changes frequently.
+  // Account-specific provider model availability changes frequently.
   // Load the active account's live catalog for the dashboard; the static
   // registry remains the fallback while the request is pending or unavailable.
   useEffect(() => {
-    if (providerId !== "cursor") {
+    if (providerId !== "cursor" && providerId !== "cline" && providerId !== "qoder" && providerId !== "workbuddy" && providerId !== "nous") {
       setLiveModels([]);
       return;
     }
@@ -557,12 +558,12 @@ export default function ProviderDetailPage() {
     }
   };
 
-  // Fetch Qoder model list and automatically add to available models
-  const handleImportQoderModels = async () => {
+  // Fetch live provider model list and automatically add to available models
+  const handleImportLiveModels = async () => {
     if (importingQoderModels) return;
     const activeConnection = connections.find((conn) => conn.isActive !== false);
     if (!activeConnection) {
-      alert(translate("Please add an active Qoder connection first"));
+      alert(translate("Please add an active provider connection first"));
       return;
     }
 
@@ -585,8 +586,10 @@ export default function ProviderDetailPage() {
         const modelId = model.id || model.name;
         if (!modelId) continue;
         
-        // Qoder model ID format may be "qoder/auto" or "auto", need to remove prefix
-        const cleanModelId = modelId.replace(/^qoder\//, "");
+        const rawModelId = String(modelId);
+        const cleanModelId = rawModelId.startsWith(providerId + "/")
+          ? rawModelId.slice(providerId.length + 1)
+          : rawModelId;
         const alreadyExists = customModels.some(
           (entry) => entry.providerAlias === providerStorageAlias && entry.id === cleanModelId && (entry.kind || entry.type || "llm") === "llm"
         ) || Object.values(modelAliases).includes(`${providerStorageAlias}/${cleanModelId}`);
@@ -604,7 +607,7 @@ export default function ProviderDetailPage() {
         alert(translate("Successfully added") + ` ${importedCount} ` + translate("models"));
       }
     } catch (error) {
-      console.log("Error importing Qoder models:", error);
+      console.log("Error importing provider models:", error);
       alert(translate("Error fetching models") + ": " + error.message);
     } finally {
       setImportingQoderModels(false);
@@ -1171,17 +1174,17 @@ export default function ProviderDetailPage() {
           Add Model
         </button>
 
-        {/* Import Qoder models button — only show for qoder provider */}
-        {providerId === "qoder" && connections.some((conn) => conn.isActive !== false) && (
+        {/* Import live models button — only show for providers with live catalogs */}
+        {(providerId === "qoder" || providerId === "workbuddy" || providerId === "nous") && connections.some((conn) => conn.isActive !== false) && (
           <button
-            onClick={handleImportQoderModels}
+            onClick={handleImportLiveModels}
             disabled={importingQoderModels}
             className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-blue-500/40 px-3 py-2 text-xs text-blue-600 dark:text-blue-400 transition-colors hover:border-blue-500 hover:bg-blue-500/5 sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="material-symbols-outlined text-sm" style={importingQoderModels ? { animation: "spin 1s linear infinite" } : undefined}>
               {importingQoderModels ? "progress_activity" : "download"}
             </span>
-            {importingQoderModels ? translate("Fetching...") : translate("Fetch Qoder Models")}
+            {importingQoderModels ? translate("Fetching...") : translate("Fetch Provider Models")}
           </button>
         )}
 

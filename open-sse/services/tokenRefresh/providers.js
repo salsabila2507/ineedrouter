@@ -34,6 +34,27 @@ export async function refreshXaiToken(refreshToken, log) {
 // Per-provider refresh variants for the generic path. Keys not listed fall back
 // to the default form-encoded OAuth2 refresh with client_id + client_secret.
 const REFRESH_PROFILES = {
+  cline: {
+    bodyFormat: "json",
+    includeClientSecret: false,
+    dedupKey: "cline",
+    buildPayload: (_config, refreshToken) => ({
+      refreshToken,
+      grantType: "refresh_token",
+      clientType: "extension",
+    }),
+    parse: (payload) => {
+      const data = payload?.data || payload || {};
+      const expiresAtMs = data.expiresAt ? new Date(data.expiresAt).getTime() : NaN;
+      const expiresIn = Number.isFinite(expiresAtMs)
+        ? Math.max(1, Math.floor((expiresAtMs - Date.now()) / 1000))
+        : data.expiresIn;
+      const accessToken = data.accessToken
+        ? (data.accessToken.startsWith("workos:") ? data.accessToken : "workos:" + data.accessToken)
+        : undefined;
+      return { accessToken, refreshToken: data.refreshToken, expiresIn };
+    },
+  },
   claude: {
     bodyFormat: "json",
     includeClientSecret: false,
@@ -72,11 +93,13 @@ function buildRefreshBody(profile, config, refreshToken) {
     : typeof profile.includeClientSecret === "function"
       ? profile.includeClientSecret(config)
       : profile.includeClientSecret;
-  const payload = {
-    grant_type: "refresh_token",
-    refresh_token: refreshToken,
-    client_id: config.clientId,
-  };
+  const payload = profile?.buildPayload
+    ? profile.buildPayload(config, refreshToken)
+    : {
+        grant_type: "refresh_token",
+        refresh_token: refreshToken,
+        client_id: config.clientId,
+      };
   if (includeSecret && config.clientSecret) payload.client_secret = config.clientSecret;
   if (fmt === "json") return { format: "json", body: JSON.stringify(payload) };
   return { format: "form", body: new URLSearchParams(payload) };
@@ -564,6 +587,113 @@ export async function refreshCodebuddyIntlToken(refreshToken, log) {
       refreshToken: data.data.refreshToken || refreshToken,
       expiresIn: data.data.expiresIn,
     };
+  }, log);
+}
+
+export async function refreshWorkbuddyToken(refreshToken, log) {
+  if (!refreshToken) return null;
+  return dedupRefresh("workbuddy", refreshToken, async () => {
+    const oauth = PROVIDER_OAUTH.workbuddy || {};
+    const response = await fetch(oauth.refreshUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "User-Agent": oauth.userAgent,
+        "X-Requested-With": "XMLHttpRequest",
+        "X-Domain": oauth.domain || "www.workbuddy.ai",
+        "X-Refresh-Token": refreshToken,
+        "X-Auth-Refresh-Source": "plugin",
+        "X-Product": "SaaS",
+      },
+      body: "{}",
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      log?.error?.("TOKEN_REFRESH", "Failed to refresh WorkBuddy token", {
+        status: response.status,
+        error: errorText,
+      });
+      return null;
+    }
+
+    const data = await response.json();
+    if (data.code !== 0 || !data.data?.accessToken) {
+      log?.error?.("TOKEN_REFRESH", "WorkBuddy token refresh returned no token", {
+        code: data.code,
+        msg: data.msg,
+      });
+      return null;
+    }
+
+    log?.info?.("TOKEN_REFRESH", "Successfully refreshed WorkBuddy token", {
+      hasNewAccessToken: !!data.data.accessToken,
+      hasNewRefreshToken: !!data.data.refreshToken,
+      expiresIn: data.data.expiresIn,
+    });
+
+    return {
+      accessToken: data.data.accessToken,
+      refreshToken: data.data.refreshToken || refreshToken,
+      expiresIn: data.data.expiresIn,
+    };
+  }, log);
+}
+
+export async function refreshNousToken(refreshToken, log) {
+  if (!refreshToken) return null;
+  return dedupRefresh("nous", refreshToken, async () => {
+    const oauth = PROVIDER_OAUTH.nous || {};
+    try {
+      const response = await fetch(oauth.tokenUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/json",
+          "x-nous-refresh-token": refreshToken,
+        },
+        body: new URLSearchParams({
+          grant_type: "refresh_token",
+          client_id: oauth.clientId || "hermes-cli",
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        log?.error?.("TOKEN_REFRESH", "Failed to refresh Nous token", {
+          status: response.status,
+          error: errorText,
+        });
+        return null;
+      }
+
+      const data = await response.json();
+      if (!data?.access_token) {
+        log?.error?.("TOKEN_REFRESH", "Nous token refresh returned no access_token");
+        return null;
+      }
+
+      log?.info?.("TOKEN_REFRESH", "Successfully refreshed Nous token", {
+        hasNewAccessToken: !!data.access_token,
+        hasNewRefreshToken: !!data.refresh_token,
+        expiresIn: data.expires_in,
+      });
+
+      return {
+        accessToken: data.access_token,
+        refreshToken: data.refresh_token || refreshToken,
+        expiresIn: data.expires_in,
+        providerSpecificData: {
+          tokenType: data.token_type || "Bearer",
+          scope: data.scope || oauth.scopes,
+          inferenceBaseUrl: data.inference_base_url || oauth.inferenceBaseUrl,
+        },
+      };
+    } catch (error) {
+      log?.error?.("TOKEN_REFRESH", "Error refreshing Nous token: " + error.message);
+      return null;
+    }
   }, log);
 }
 
