@@ -18,7 +18,6 @@ iNeedRouter is a maintained fork of [9router](https://github.com/decolua/9router
 
 ## Highlights
 - **Three interface languages** — switch freely between Indonesian, English, and Simplified Chinese; your choice is persisted on the device.
-
 - **One endpoint, many providers** — `POST /v1/chat/completions` (OpenAI format), `POST /v1/messages` (Anthropic format), plus image, TTS, STT, embeddings, web search, web fetch, and video generation.
 - **Automatic fallback** — model combos and multi-account fallback keep requests alive when an upstream fails.
 - **Format translation** — requests pivot through OpenAI as the intermediate format, with direct routes for fragile pairs (thinking blocks, tool IDs, protobuf upstreams).
@@ -26,6 +25,26 @@ iNeedRouter is a maintained fork of [9router](https://github.com/decolua/9router
 - **Operator dashboard** — providers, combos, keys, usage analytics, routing policies, CLI-tool one-click setup, agent skills, and more.
 - **Token saver (RTK)** — pre-translate hooks compress large `tool_result` payloads to cut token spend; fail-open by design.
 - **iNeed design system** — the lavender/indigo/emerald editorial UI from [ineed.web.id](https://ineed.web.id).
+
+## Architecture
+
+```text
+Client / SDK
+    │ OpenAI or Anthropic request
+    ▼
+Gateway endpoint ──► format translation ──► provider + account pool ──► upstream API
+        │                    │                         │
+        └── usage + keys     └── fallback + routing    └── OAuth / API key auth
+```
+
+The operator console owns configuration and observability; the request path stays compatible with standard OpenAI and Anthropic clients.
+
+## Contributing
+
+1. Fork the repository and create a focused branch.
+2. Run `npm install`, then `npm run build` before opening a pull request.
+3. Add focused tests for behavior changes and keep credentials out of commits.
+4. Explain the user-facing effect and verification steps in the pull request.
 
 ## Quick start (source)
 
@@ -36,7 +55,7 @@ PORT=20128 NEXT_PUBLIC_BASE_URL=http://localhost:20128 npm run dev    # dev
 npm run build && PORT=20128 HOSTNAME=0.0.0.0 npm run start            # production
 ```
 
-Dashboard: `http://localhost:20128/dashboard` — default admin password is `123456` (override with `INITIAL_PASSWORD`); change it right away.
+Dashboard: `http://localhost:20128/dashboard` — set `INITIAL_PASSWORD` explicitly before exposing the dashboard.
 
 Endpoint: `http://localhost:20128/v1/...`
 
@@ -69,7 +88,7 @@ State is SQLite (driver chain: `bun:sqlite` → `better-sqlite3` → `node:sqlit
 ## Security
 
 - Derives client IP from the TCP socket; `X-Forwarded-For` is trusted only from a loopback reverse proxy.
-- Sensitive env: `JWT_SECRET`, `INITIAL_PASSWORD` (default `123456` — must override), `API_KEY_SECRET`, `MACHINE_ID_SALT`. See [.env.example](.env.example) for the full contract.
+- Sensitive env: `JWT_SECRET`, `INITIAL_PASSWORD`, `API_KEY_SECRET`, and `MACHINE_ID_SALT`. Set `INITIAL_PASSWORD` explicitly before exposing the dashboard. See [.env.example](.env.example) for the full contract.
 
 ## Documentation
 
