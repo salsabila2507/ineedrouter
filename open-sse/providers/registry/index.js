@@ -26,6 +26,7 @@ import p23 from "./coqui.js";
 import p24 from "./cursor.js";
 import p25 from "./deepgram.js";
 import p26 from "./deepseek.js";
+import p124 from "./duck-ai.js";
 import p27 from "./edge-tts.js";
 import p28 from "./elevenlabs.js";
 import p29 from "./exa.js";
@@ -154,6 +155,7 @@ export default [
   p24,
   p25,
   p26,
+  p124,
   p27,
   p28,
   p29,
