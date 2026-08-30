@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import pkg from "../../package.json" with { type: "json" };
 
 const APP_VERSION = pkg.version || "0.0.0";
@@ -12,6 +13,26 @@ export function getClineAccessToken(token) {
 export function getClineAuthorizationHeader(token) {
   const accessToken = getClineAccessToken(token);
   return accessToken ? `Bearer ${accessToken}` : "";
+}
+
+export function buildClineCliHeaders(token, extraHeaders = {}, taskId = randomUUID()) {
+  const authorization = getClineAuthorizationHeader(token);
+  const headers = {
+    "HTTP-Referer": "https://cline.bot",
+    "X-Title": "Cline",
+    "User-Agent": "Cline/3.0.60",
+    "X-IS-MULTIROOT": "false",
+    "X-CLIENT-TYPE": "cline-cli",
+    "X-CLIENT-VERSION": "3.0.60",
+    "X-PLATFORM": "cli",
+    "X-PLATFORM-VERSION": "3.0.60",
+    "X-CORE-VERSION": "0.0.81",
+    "X-Task-ID": taskId,
+    ...extraHeaders,
+  };
+
+  if (authorization) headers.Authorization = authorization;
+  return headers;
 }
 
 export function buildClineHeaders(token, extraHeaders = {}) {
