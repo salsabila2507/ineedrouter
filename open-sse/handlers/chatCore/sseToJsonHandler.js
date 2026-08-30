@@ -182,6 +182,28 @@ export function parseSSEToOpenAIResponse(rawSSE, fallbackModel) {
 export async function handleForcedSSEToJson({ providerResponse, sourceFormat, targetFormat, provider, model, body, stream, translatedBody, finalBody, requestStartTime, connectionId, apiKey, clientRawRequest, onRequestSuccess, customToolNames, trackDone, appendLog, reqTag, log }) {
   const contentType = providerResponse.headers.get("content-type") || "";
   const isSSE = contentType.includes("text/event-stream") || (contentType === "" && isResponsesProvider(provider));
+
+  // Cline may honor stream:true while returning a JSON envelope. Normalize it
+  // before the generic streaming handler can leak the envelope to JSON clients.
+  if (!isSSE && provider === "cline") {
+    try {
+      const envelope = await providerResponse.json();
+      const parsed = envelope?.data && typeof envelope.data === "object" ? envelope.data : envelope;
+      if (!Array.isArray(parsed?.choices)) {
+        return createErrorResult(HTTP_STATUS.BAD_GATEWAY, "Invalid Cline response for non-streaming request");
+      }
+      trackDone();
+      if (onRequestSuccess) await onRequestSuccess();
+      const usage = parsed.usage || {};
+      appendLog({ tokens: usage, status: "200 OK" });
+      saveUsageStats({ provider, model, tokens: usage, connectionId, apiKey, endpoint: clientRawRequest?.endpoint, silent: true });
+      if (log?.line) log.line(reqTag, "📊", formatDoneLine({ usage, latency: { total: Date.now() - requestStartTime } }));
+      return { success: true, response: new Response(JSON.stringify(parsed), { headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" } }) };
+    } catch (err) {
+      console.error("[ChatCore] Cline JSON envelope conversion failed:", err);
+      return createErrorResult(HTTP_STATUS.BAD_GATEWAY, "Failed to convert Cline response to JSON");
+    }
+  }
   if (!isSSE) return null; // not handled here
 
   trackDone();

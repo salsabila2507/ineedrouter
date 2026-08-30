@@ -57,6 +57,25 @@ exports[`GOLDEN buildHeaders (default executor providers) > alims-intl → heade
 }
 `;
 
+exports[`GOLDEN buildHeaders (default executor providers) > alitp-intl → headers (apiKey / oauth) 1`] = `
+{
+  "apiKey": {
+    "Accept": "text/event-stream",
+    "Authorization": "Bearer <TOK>",
+    "Content-Type": "application/json",
+  },
+  "nonStream": {
+    "Authorization": "Bearer <TOK>",
+    "Content-Type": "application/json",
+  },
+  "oauth": {
+    "Accept": "text/event-stream",
+    "Authorization": "Bearer <TOK>",
+    "Content-Type": "application/json",
+  },
+}
+`;
+
 exports[`GOLDEN buildHeaders (default executor providers) > anthropic → headers (apiKey / oauth) 1`] = `
 {
   "apiKey": {
@@ -330,26 +349,28 @@ exports[`GOLDEN buildHeaders (default executor providers) > cline → headers (a
     "Authorization": "Bearer <TOK>",
     "Content-Type": "application/json",
     "HTTP-Referer": "https://cline.bot",
-    "User-Agent": "9Router/0.4.80",
-    "X-CLIENT-TYPE": "9router",
-    "X-CLIENT-VERSION": "0.4.80",
-    "X-CORE-VERSION": "0.4.80",
+    "User-Agent": "Cline/3.0.60",
+    "X-CLIENT-TYPE": "cline-cli",
+    "X-CLIENT-VERSION": "3.0.60",
+    "X-CORE-VERSION": "0.0.81",
     "X-IS-MULTIROOT": "false",
-    "X-PLATFORM": "darwin",
-    "X-PLATFORM-VERSION": "v22.22.0",
+    "X-PLATFORM": "cli",
+    "X-PLATFORM-VERSION": "3.0.60",
+    "X-Task-ID": "<TASK-ID>",
     "X-Title": "Cline",
   },
   "nonStream": {
     "Authorization": "Bearer <TOK>",
     "Content-Type": "application/json",
     "HTTP-Referer": "https://cline.bot",
-    "User-Agent": "9Router/0.4.80",
-    "X-CLIENT-TYPE": "9router",
-    "X-CLIENT-VERSION": "0.4.80",
-    "X-CORE-VERSION": "0.4.80",
+    "User-Agent": "Cline/3.0.60",
+    "X-CLIENT-TYPE": "cline-cli",
+    "X-CLIENT-VERSION": "3.0.60",
+    "X-CORE-VERSION": "0.0.81",
     "X-IS-MULTIROOT": "false",
-    "X-PLATFORM": "darwin",
-    "X-PLATFORM-VERSION": "v22.22.0",
+    "X-PLATFORM": "cli",
+    "X-PLATFORM-VERSION": "3.0.60",
+    "X-Task-ID": "<TASK-ID>",
     "X-Title": "Cline",
   },
   "oauth": {
@@ -357,13 +378,14 @@ exports[`GOLDEN buildHeaders (default executor providers) > cline → headers (a
     "Authorization": "Bearer <TOK>",
     "Content-Type": "application/json",
     "HTTP-Referer": "https://cline.bot",
-    "User-Agent": "9Router/0.4.80",
-    "X-CLIENT-TYPE": "9router",
-    "X-CLIENT-VERSION": "0.4.80",
-    "X-CORE-VERSION": "0.4.80",
+    "User-Agent": "Cline/3.0.60",
+    "X-CLIENT-TYPE": "cline-cli",
+    "X-CLIENT-VERSION": "3.0.60",
+    "X-CORE-VERSION": "0.0.81",
     "X-IS-MULTIROOT": "false",
-    "X-PLATFORM": "darwin",
-    "X-PLATFORM-VERSION": "v22.22.0",
+    "X-PLATFORM": "cli",
+    "X-PLATFORM-VERSION": "3.0.60",
+    "X-Task-ID": "<TASK-ID>",
     "X-Title": "Cline",
   },
 }
@@ -547,6 +569,25 @@ exports[`GOLDEN buildHeaders (default executor providers) > deepgram → headers
 `;
 
 exports[`GOLDEN buildHeaders (default executor providers) > deepseek → headers (apiKey / oauth) 1`] = `
+{
+  "apiKey": {
+    "Accept": "text/event-stream",
+    "Authorization": "Bearer <TOK>",
+    "Content-Type": "application/json",
+  },
+  "nonStream": {
+    "Authorization": "Bearer <TOK>",
+    "Content-Type": "application/json",
+  },
+  "oauth": {
+    "Accept": "text/event-stream",
+    "Authorization": "Bearer <TOK>",
+    "Content-Type": "application/json",
+  },
+}
+`;
+
+exports[`GOLDEN buildHeaders (default executor providers) > duck-ai → headers (apiKey / oauth) 1`] = `
 {
   "apiKey": {
     "Accept": "text/event-stream",
@@ -1037,6 +1078,28 @@ exports[`GOLDEN buildHeaders (default executor providers) > nebius → headers (
 }
 `;
 
+exports[`GOLDEN buildHeaders (default executor providers) > nous → headers (apiKey / oauth) 1`] = `
+{
+  "apiKey": {
+    "Accept": "text/event-stream",
+    "Authorization": "Bearer <TOK>",
+    "Content-Type": "application/json",
+    "User-Agent": "iNeedRouter/0.5.55",
+  },
+  "nonStream": {
+    "Authorization": "Bearer <TOK>",
+    "Content-Type": "application/json",
+    "User-Agent": "iNeedRouter/0.5.55",
+  },
+  "oauth": {
+    "Accept": "text/event-stream",
+    "Authorization": "Bearer <TOK>",
+    "Content-Type": "application/json",
+    "User-Agent": "iNeedRouter/0.5.55",
+  },
+}
+`;
+
 exports[`GOLDEN buildHeaders (default executor providers) > nvidia → headers (apiKey / oauth) 1`] = `
 {
   "apiKey": {
@@ -1328,6 +1391,49 @@ exports[`GOLDEN buildHeaders (default executor providers) > volcengine-ark → h
 }
 `;
 
+exports[`GOLDEN buildHeaders (default executor providers) > workbuddy → headers (apiKey / oauth) 1`] = `
+{
+  "apiKey": {
+    "Accept": "text/event-stream",
+    "Authorization": "Bearer <TOK>",
+    "Content-Type": "application/json",
+    "Origin": "https://www.workbuddy.ai",
+    "Referer": "https://www.workbuddy.ai/",
+    "User-Agent": "CLI/2.136.0 CodeBuddy/2.136.0",
+    "X-Domain": "www.workbuddy.ai",
+    "X-IDE-Name": "CLI",
+    "X-IDE-Type": "CLI",
+    "X-Product": "SaaS",
+    "X-Requested-With": "XMLHttpRequest",
+  },
+  "nonStream": {
+    "Authorization": "Bearer <TOK>",
+    "Content-Type": "application/json",
+    "Origin": "https://www.workbuddy.ai",
+    "Referer": "https://www.workbuddy.ai/",
+    "User-Agent": "CLI/2.136.0 CodeBuddy/2.136.0",
+    "X-Domain": "www.workbuddy.ai",
+    "X-IDE-Name": "CLI",
+    "X-IDE-Type": "CLI",
+    "X-Product": "SaaS",
+    "X-Requested-With": "XMLHttpRequest",
+  },
+  "oauth": {
+    "Accept": "text/event-stream",
+    "Authorization": "Bearer <TOK>",
+    "Content-Type": "application/json",
+    "Origin": "https://www.workbuddy.ai",
+    "Referer": "https://www.workbuddy.ai/",
+    "User-Agent": "CLI/2.136.0 CodeBuddy/2.136.0",
+    "X-Domain": "www.workbuddy.ai",
+    "X-IDE-Name": "CLI",
+    "X-IDE-Type": "CLI",
+    "X-Product": "SaaS",
+    "X-Requested-With": "XMLHttpRequest",
+  },
+}
+`;
+
 exports[`GOLDEN buildHeaders (default executor providers) > xai → headers (apiKey / oauth) 1`] = `
 {
   "apiKey": {
@@ -1406,6 +1512,13 @@ exports[`GOLDEN buildUrl (default executor providers) > alims-intl → url (stre
 {
   "nonStream": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
   "stream": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+}
+`;
+
+exports[`GOLDEN buildUrl (default executor providers) > alitp-intl → url (stream + non-stream) 1`] = `
+{
+  "nonStream": "https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions",
+  "stream": "https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1/chat/completions",
 }
 `;
 
@@ -1539,6 +1652,13 @@ exports[`GOLDEN buildUrl (default executor providers) > deepseek → url (stream
 {
   "nonStream": "https://api.deepseek.com/chat/completions",
   "stream": "https://api.deepseek.com/chat/completions",
+}
+`;
+
+exports[`GOLDEN buildUrl (default executor providers) > duck-ai → url (stream + non-stream) 1`] = `
+{
+  "nonStream": "http://localhost:3000/v1/chat/completions",
+  "stream": "http://localhost:3000/v1/chat/completions",
 }
 `;
 
@@ -1696,6 +1816,13 @@ exports[`GOLDEN buildUrl (default executor providers) > nebius → url (stream +
 }
 `;
 
+exports[`GOLDEN buildUrl (default executor providers) > nous → url (stream + non-stream) 1`] = `
+{
+  "nonStream": "https://inference-api.nousresearch.com/v1/chat/completions",
+  "stream": "https://inference-api.nousresearch.com/v1/chat/completions",
+}
+`;
+
 exports[`GOLDEN buildUrl (default executor providers) > nvidia → url (stream + non-stream) 1`] = `
 {
   "nonStream": "https://integrate.api.nvidia.com/v1/chat/completions",
@@ -1798,6 +1925,13 @@ exports[`GOLDEN buildUrl (default executor providers) > volcengine-ark → url (
 {
   "nonStream": "https://ark.cn-beijing.volces.com/api/coding/v3/chat/completions",
   "stream": "https://ark.cn-beijing.volces.com/api/coding/v3/chat/completions",
+}
+`;
+
+exports[`GOLDEN buildUrl (default executor providers) > workbuddy → url (stream + non-stream) 1`] = `
+{
+  "nonStream": "https://www.workbuddy.ai/v2/chat/completions",
+  "stream": "https://www.workbuddy.ai/v2/chat/completions",
 }
 `;
 

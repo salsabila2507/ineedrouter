@@ -107,14 +107,15 @@ describe("refreshAccessToken — legacy generic path (no profile)", () => {
   beforeEach(() => { vi.clearAllMocks(); vi.resetModules(); global.fetch = originalFetch; });
   afterEach(() => { global.fetch = originalFetch; });
 
-  it("still works for an unprofiled provider via config.refreshUrl/clientId/clientSecret", async () => {
-    const fm = mockFetchOnce({ access_token: "gen-acc", expires_in: 3600 });
+  it("cline: JSON camelCase refresh body and nested camelCase response", async () => {
+    const fm = mockFetchOnce({ data: { accessToken: "gen-acc", refreshToken: "gen-rot", expiresIn: 3600 } });
     const { refreshAccessToken } = await import("open-sse/services/tokenRefresh/providers.js");
 
-    await refreshAccessToken("cline", "gen-old", {}, console);
+    const out = await refreshAccessToken("cline", "gen-old", {}, console);
 
-    const body = new URLSearchParams(fm.mock.calls[0][1].body);
-    expect(body.get("grant_type")).toBe("refresh_token");
-    expect(body.get("client_id")).toBeTruthy();
+    const body = JSON.parse(fm.mock.calls[0][1].body);
+    expect(body).toEqual({ refreshToken: "gen-old", grantType: "refresh_token", clientType: "extension" });
+    expect(out.accessToken).toBe("workos:gen-acc");
+    expect(out.refreshToken).toBe("gen-rot");
   });
 });
