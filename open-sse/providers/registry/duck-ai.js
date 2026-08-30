@@ -19,8 +19,8 @@ export default {
   authModes: ["apikey"],
   hasProviderSpecificData: true,
   transport: {
-    baseUrl: "http://localhost:3000/v1/chat/completions",
-    validateUrl: "http://localhost:3000/v1/models",
+    baseUrl: "http://127.0.0.1:20129/v1/chat/completions",
+    validateUrl: "http://127.0.0.1:20129/v1/models",
   },
   models: [
     { id: "gpt-4o-mini", name: "GPT-4o Mini (Duck.ai)" },
